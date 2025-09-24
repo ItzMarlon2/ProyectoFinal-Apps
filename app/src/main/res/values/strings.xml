@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Proyecto Final</string>
+    <!-- Strings para LoginForm -->
+    <string name="login_app_title">uniLocal</string>
+    <string name="login_welcome_message">Inicia sesión en tu cuenta</string>
+    <string name="login_label_email">Correo Electrónico</string>
+    <string name="login_placeholder_email">ej: tu@correo.com</string>
+    <string name="login_label_password">Contraseña</string>
+    <string name="login_placeholder_password">Ingresa tu contraseña</string>
+    <string name="login_button_text">Iniciar Sesión</string>
+    <string name="login_error_message_email">El Correo es obligatorio y debe ser válido</string>
+    <string name="login_error_message_password">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="login_text_signuphere">¿No tienes una cuenta?</string>
+    <string name="login_text_signuphere_navigate">Registrate</string>
+    <string name="login_text_forgot_password">¿Olvidaste tu contraseña?</string>
+
+
+    <!-- Content Description para la imagen del ícono -->
+    <string name="icon_content_description_location">Ícono de ubicación</string>
+    <string name="register_text_title">Crear cuenta</string>
+    <string name="register_text_header">únite a uniLocal</string>
+    <string name="register_label_name">Nombre completo</string>
+    <string name="register_error_message_name">Este campo es obligatorio</string>
+    <string name="register_label_name_placeholder">Tu Nombre completo</string>
+    <string name="register_label_username">Nombre de usuario</string>
+    <string name="register_error_message_username">Este campo es obligatorio</string>
+    <string name="register_label_username_placeholder">"@tuusuario"</string>
+    <string name="register_label_city">Tu residencia</string>
+    <string name="register_label_city2">Ciudad de recidencia</string>
+    <string name="register_label_confirm_password">Confirma tu contraseña</string>
+    <string name="register_redirect_login">¿Ya tienes cuenta?</string>
+    <string name="register_redirect_login2">Iniciar sesión</string>
+    <string name="register_text_btn">Crear cuenta</string>
+    <string name="text_arrow">Regresar</string>
+
+</resources>

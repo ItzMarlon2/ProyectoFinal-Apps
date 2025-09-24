@@ -1,0 +1,226 @@
+package com.example.proyectofinal.ui.screens
+
+import android.util.Patterns
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.proyectofinal.R
+import com.example.proyectofinal.ui.components.DropDownMenu
+import com.example.proyectofinal.ui.components.InputText
+import com.example.proyectofinal.ui.theme.Primary
+
+@Composable
+fun RegisterScreen(
+    onNavigateToLogin: () -> Unit,
+){
+    val (name, setName) = rememberSaveable { mutableStateOf("") }
+    val (isErrorName, setIsErrorName) = rememberSaveable { mutableStateOf(false) }
+    val (username, setUsername) = rememberSaveable { mutableStateOf("") }
+    val (isErrorUsername, setIsErrorUsername) = rememberSaveable { mutableStateOf(false) }
+    val (email, setEmail) = rememberSaveable { mutableStateOf("") }
+    val (city, setCity) = rememberSaveable { mutableStateOf("") }
+    var (isEmailError, setIsEmailError) = rememberSaveable { mutableStateOf(false) }
+    var (password, setPassword) = rememberSaveable { mutableStateOf("") }
+    var (isPasswordError, setIsPasswordError) = rememberSaveable { mutableStateOf(false) }
+    var (confirmPassword, setConfirmPassword) = rememberSaveable { mutableStateOf("") }
+    var (isConfirmPasswordError, setIsConfirmPasswordError) = rememberSaveable { mutableStateOf(false) }
+    val cityOptions = listOf(
+        "Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena",
+        "Ciudad de México", "Guadalajara", "Monterrey",
+        "Buenos Aires", "Córdoba", "Rosario",
+        "Lima", "Arequipa",
+        "Santiago"
+    )
+    var context = LocalContext.current
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 10.dp),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(space = 40.dp),
+
+        content = {
+            Row (
+                horizontalArrangement = Arrangement.Absolute.Left,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 20.dp),
+
+                // Contenido del Row
+                content={
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBack,
+                        contentDescription = stringResource(R.string.text_arrow),
+                        modifier = Modifier
+                            .size(30.dp),
+                    )
+                    Column (
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier.padding(start = 16.dp), // Añade padding horizontal para separación
+                        verticalArrangement = Arrangement.spacedBy(space = 2.dp),
+                        content={
+                            Text(
+                                text = stringResource(R.string.register_text_title),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Color.Black,
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = stringResource(R.string.register_text_header),
+                                fontSize = 18.sp
+
+                            )
+                        }
+                    )
+                }
+
+            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(space = 10.dp),
+                modifier = Modifier
+                    .padding(horizontal = 40.dp),
+
+                content={
+                    InputText(
+                        value = name,
+                        setValue = setName,
+                        text = stringResource(R.string.register_label_name),
+                        place = stringResource(R.string.register_label_name_placeholder),
+                        textError = stringResource(R.string.register_error_message_name),
+                        isError = isErrorName,
+                        setError = setIsErrorName,
+                        onValidate = {
+                            name.isBlank()
+                        }
+                    )
+                    InputText(
+                        value = username,
+                        setValue = setUsername,
+                        text = stringResource(R.string.register_label_username),
+                        place = stringResource(R.string.register_label_username_placeholder),
+                        textError = stringResource(R.string.register_error_message_username),
+                        isError = isErrorUsername,
+                        setError = setIsErrorUsername,
+                        onValidate = {
+                            username.isBlank()
+                        }
+                    )
+                    InputText(
+                        value = email,
+                        setValue = setEmail,
+                        text = stringResource(R.string.login_label_email),
+                        place = stringResource(R.string.login_placeholder_email),
+                        textError = stringResource(R.string.login_error_message_email),
+                        isError = isEmailError,
+                        setError = setIsEmailError,
+                        onValidate = {
+                            email.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                        }
+                    )
+
+                    DropDownMenu(
+                        items = cityOptions,           // La lista de strings para las opciones
+                        selectedItem = city,
+                        text = stringResource(R.string.register_label_city2),// El estado actual de la ciudad seleccionada
+                        onItemSelected = { newCity ->  // Lambda que se ejecuta cuando se selecciona un nuevo ítem
+                            setCity(newCity)           // Actualiza el estado 'city' con la nueva selección
+                        },
+                    )
+                    InputText(
+                        value = password,
+                        setValue = setPassword,
+                        isPassword = true,
+                        text = stringResource(R.string.login_label_password),
+                        place = stringResource(R.string.login_placeholder_password),
+                        textError = stringResource(R.string.login_error_message_password),
+                        isError = isPasswordError,
+                        setError = setIsPasswordError,
+                        onValidate = {
+                            password.length < 8 || password.isBlank()
+                        }
+                    )
+                    InputText(
+                        value = confirmPassword,
+                        setValue = setConfirmPassword,
+                        isPassword = true,
+                        text = stringResource(R.string.register_label_confirm_password),
+                        place = stringResource(R.string.login_placeholder_password),
+                        textError = stringResource(R.string.login_error_message_password),
+                        isError = isConfirmPasswordError,
+                        setError = setIsConfirmPasswordError,
+                        onValidate = {
+                            confirmPassword != password
+                        }
+                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(space = 20.dp),
+                        content={
+                            Button(
+                                onClick = {
+
+                                },
+                                colors = ButtonDefaults.buttonColors(Primary),
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier
+                                    .width(250.dp)
+                                    .height(50.dp),
+                                content={
+                                    Text(
+                                        text = stringResource(R.string.register_text_btn)
+                                    )
+                                }
+                            )
+
+                            Row {
+                                Text(
+                                    text = stringResource(R.string.register_redirect_login)
+                                )
+                                Text(
+                                    text = stringResource(R.string.register_redirect_login2),
+                                    color = Primary,
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        textDecoration = TextDecoration.Underline // Subrayado para que parezca un enlace
+                                    ),
+                                    modifier = Modifier
+                                        .padding(horizontal = 5.dp)
+                                        .clickable {
+                                            onNavigateToLogin()
+                                        },
+                                )
+                            }
+                        }
+                    )
+
+                }
+            )
+        }
+    )
+}
