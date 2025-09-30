@@ -13,6 +13,10 @@
     <string name="login_text_signuphere">¿No tienes una cuenta?</string>
     <string name="login_text_signuphere_navigate">Registrate</string>
     <string name="login_text_forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="login_text_user">Usuario</string>
+    <string name="icon_content_description_business">User bussines</string>
+    <string name="login_text_business">Moderador</string>
+
 
 
     <!-- Content Description para la imagen del ícono -->

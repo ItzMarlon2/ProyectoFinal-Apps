@@ -1,8 +1,6 @@
 package com.example.proyectofinal.ui.screens
 
-import android.text.util.Linkify
 import android.util.Patterns
-import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,13 +30,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.proyectofinal.R
 import com.example.proyectofinal.ui.components.InputText
+import com.example.proyectofinal.ui.components.ToggleButtonGroup
 import com.example.proyectofinal.ui.theme.Primary
 import com.example.proyectofinal.ui.theme.PrimaryLight
 
@@ -48,6 +46,7 @@ fun LoginForm(
     onNavigateToForgotPassword: () -> Unit = {}
 ){
     val (email, setEmail) = rememberSaveable { mutableStateOf("") }
+    val (typeUser, setTypeUser) = rememberSaveable { mutableStateOf("") }
     var (isEmailError, setIsEmailError) = rememberSaveable { mutableStateOf(false) }
     var (password, setPassword) = rememberSaveable { mutableStateOf("") }
     var (isPasswordError, setIsPasswordError) = rememberSaveable { mutableStateOf(false) }
@@ -87,11 +86,68 @@ fun LoginForm(
                         )
                     }
                 )
-
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(space = 20.dp),
                     content={
+                        ToggleButtonGroup(
+                            onButtonSelected = { selectedButtonType ->
+                                setTypeUser(selectedButtonType)
+                            },
+
+                        )
+//                        Row(
+//                            modifier = Modifier
+//                                .fillMaxWidth(),
+//                            horizontalArrangement = Arrangement.SpaceBetween
+//                        ) {
+//                            Button(
+//                                onClick = {
+//
+//                                },
+//                                colors = ButtonDefaults.buttonColors(Primary),
+//                                shape = RoundedCornerShape(8.dp),
+//                                modifier = Modifier
+//                                    .width(150.dp)
+//                                    .height(50.dp),
+//                                content={
+//                                        Icon(
+//                                            imageVector = Icons.Outlined.LocationOn,
+//                                            contentDescription = stringResource(R.string.icon_content_description_location),
+//                                            modifier = Modifier
+//                                                .size(25.dp)
+//                                        )
+//                                    Spacer(
+//                                        modifier = Modifier.width(8.dp)
+//                                    )
+//                                        Text(
+//                                            text = stringResource(R.string.login_text_user),
+//                                            fontSize = 18.sp,
+//                                            fontWeight = FontWeight.Bold
+//                                        )
+//
+//
+//                                }
+//                            )
+//                            Button(
+//                                onClick = {
+//
+//                                },
+//                                content={
+//                                    Icon(
+//                                        imageVector = Icons.Outlined.LocationOn,
+//                                        contentDescription = stringResource(R.string.icon_content_description_location),
+//                                        modifier = Modifier
+//                                            .size(30.dp),
+//                                    )
+//                                    Text(
+//                                        text = stringResource(R.string.login_text_user)
+//                                    )
+//
+//
+//                                }
+//                            )
+//                        }
                         InputText(
                             value = email,
                             setValue = setEmail,
