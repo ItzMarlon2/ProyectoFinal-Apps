@@ -37,4 +37,10 @@
     <string name="register_text_btn">Crear cuenta</string>
     <string name="text_arrow">Regresar</string>
 
+    <string name="menu_map">Mapa</string>
+    <string name="menu_search">Buscar</string>
+    <string name="menu_create">Crear</string>
+    <string name="menu_favorites">Favoritos</string>
+    <string name="menu_profile">Perfil</string>
+
 </resources>

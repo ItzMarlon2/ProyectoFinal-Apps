@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.proyectofinal.ui.config.RouteScreen
+import com.example.proyectofinal.ui.screens.user.HomeUser
 
 @Composable
 fun Navigation(){
@@ -12,7 +13,7 @@ fun Navigation(){
 
     NavHost(
         navController = navController,
-        startDestination = RouteScreen.Login ,
+        startDestination = RouteScreen.HomeUser ,
 
     ){
         composable<RouteScreen.Login>{
@@ -26,12 +27,13 @@ fun Navigation(){
                 onNavigateToLogin = {navController.navigate(RouteScreen.Login)}
             )
         }
-        composable<RouteScreen.Home>{
-            HomeScreen()
-
-        }
         composable<RouteScreen.ForgotPassword>{
             ForgotPasswordScreen()
+
+        }
+
+        composable<RouteScreen.HomeUser>{
+            HomeUser()
 
         }
 

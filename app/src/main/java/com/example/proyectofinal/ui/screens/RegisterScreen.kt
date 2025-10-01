@@ -4,6 +4,7 @@ import android.util.Patterns
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -15,9 +16,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,6 +46,21 @@ import com.example.proyectofinal.ui.theme.Primary
 fun RegisterScreen(
     onNavigateToLogin: () -> Unit,
 ){
+
+
+    Scaffold (
+        modifier = Modifier.fillMaxSize(),
+                topBar = {
+                    TopAppBarRegister()
+                }
+            ){ padding ->
+                ScrollContent(padding=padding, onNavigateToLogin)
+            }
+}
+
+
+@Composable
+fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit){
     val (name, setName) = rememberSaveable { mutableStateOf("") }
     val (isErrorName, setIsErrorName) = rememberSaveable { mutableStateOf(false) }
     val (username, setUsername) = rememberSaveable { mutableStateOf("") }
@@ -222,5 +244,45 @@ fun RegisterScreen(
                 }
             )
         }
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopAppBarRegister(){
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
+    TopAppBar(
+        title={
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.padding(start = 16.dp), // Añade padding horizontal para separación
+                verticalArrangement = Arrangement.spacedBy(space = 2.dp),
+                content={
+                    Text(
+                        text = stringResource(R.string.register_text_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.Black,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = stringResource(R.string.register_text_header),
+                        fontSize = 18.sp
+
+                    )
+                }
+            )
+        },
+        navigationIcon = {
+            IconButton (onClick = { /* do something */ }) {
+                Icon(
+                    imageVector = Icons.Outlined.ArrowBack,
+                    contentDescription = "Localized description"
+                )
+            }
+        },
+        scrollBehavior = scrollBehavior
     )
 }
