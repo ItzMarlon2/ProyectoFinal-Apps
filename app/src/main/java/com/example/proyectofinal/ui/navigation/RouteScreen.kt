@@ -1,4 +1,4 @@
-package com.example.proyectofinal.ui.config
+package com.example.proyectofinal.ui.navigation
 
 import kotlinx.serialization.Serializable
 
@@ -12,4 +12,13 @@ sealed class RouteScreen{
 
     @Serializable
     data object HomeUser: RouteScreen()
+
+    @Serializable
+    data object HomeAdmin: RouteScreen()
+
+    @Serializable
+    data object CreatePlace: RouteScreen()
+
+    @Serializable
+    data class PlaceDetail(val id:String): RouteScreen()
 }

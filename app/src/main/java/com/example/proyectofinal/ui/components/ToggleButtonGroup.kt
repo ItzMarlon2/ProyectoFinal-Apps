@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.proyectofinal.R
+import com.example.proyectofinal.model.Role
 import com.example.proyectofinal.ui.theme.Primary
 
 const val USER_TYPE = "usuario"
@@ -35,11 +36,10 @@ const val MODERATOR_TYPE = "moderador"
 
 @Composable
 fun ToggleButtonGroup(
-    initialSelectedType: String = USER_TYPE,
-    onButtonSelected: (String) -> Unit,
+    onButtonSelected: (Role) -> Unit,
     modifier: Modifier = Modifier
 ){
-    val (selectedButtonType, setSelectedButtonType) = rememberSaveable { mutableStateOf(initialSelectedType) }
+    val (selectedButtonType, setSelectedButtonType) = rememberSaveable { mutableStateOf(Role.USER) }
 
     val activeButtonColor = Primary
     val inactiveButtonColor = Color.Transparent
@@ -52,13 +52,13 @@ fun ToggleButtonGroup(
     ){
         Button(
             onClick = {
-                setSelectedButtonType(USER_TYPE)
-                onButtonSelected(USER_TYPE)
+                setSelectedButtonType(Role.USER)
+                onButtonSelected(Role.USER)
             },
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (selectedButtonType == USER_TYPE) activeButtonColor else inactiveButtonColor,
-                contentColor = if (selectedButtonType == USER_TYPE) activeTextColor else inactiveTextColor
+                containerColor = if (selectedButtonType == Role.USER) activeButtonColor else inactiveButtonColor,
+                contentColor = if (selectedButtonType == Role.USER) activeTextColor else inactiveTextColor
             ),
             modifier = Modifier
                 .weight(.5f)
@@ -81,13 +81,13 @@ fun ToggleButtonGroup(
         Spacer(Modifier.width(16.dp))
         Button(
             onClick = {
-                setSelectedButtonType(MODERATOR_TYPE)
-                onButtonSelected(MODERATOR_TYPE)
+                setSelectedButtonType(Role.ADMIN)
+                onButtonSelected(Role.ADMIN)
             },
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (selectedButtonType == MODERATOR_TYPE) activeButtonColor else inactiveButtonColor,
-                contentColor = if (selectedButtonType == MODERATOR_TYPE) activeTextColor else inactiveTextColor
+                containerColor = if (selectedButtonType == Role.ADMIN) activeButtonColor else inactiveButtonColor,
+                contentColor = if (selectedButtonType == Role.ADMIN) activeTextColor else inactiveTextColor
             ),
             modifier = Modifier
                 .weight(.5f)

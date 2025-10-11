@@ -1,6 +1,7 @@
-package com.example.proyectofinal.ui.screens
+package com.example.proyectofinal.ui.auth
 
 import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,22 +36,28 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.proyectofinal.R
+import com.example.proyectofinal.model.Role
 import com.example.proyectofinal.ui.components.InputText
 import com.example.proyectofinal.ui.components.ToggleButtonGroup
+import com.example.proyectofinal.ui.navigation.localMainViewModel
 import com.example.proyectofinal.ui.theme.Primary
 import com.example.proyectofinal.ui.theme.PrimaryLight
+import com.example.proyectofinal.viewModel.UsersViewModel
 
 @Composable
 fun LoginForm(
     onNavigateToRegister: () -> Unit = {},
-    onNavigateToForgotPassword: () -> Unit = {}
-){
+    onNavigateToForgotPassword: () -> Unit = {},
+    onNavigateToHome: (String, Role) -> Unit,
+
+    ){
     val (email, setEmail) = rememberSaveable { mutableStateOf("") }
-    val (typeUser, setTypeUser) = rememberSaveable { mutableStateOf("") }
+    val (typeUser, setTypeUser) = rememberSaveable { mutableStateOf(Role.USER) }
     var (isEmailError, setIsEmailError) = rememberSaveable { mutableStateOf(false) }
     var (password, setPassword) = rememberSaveable { mutableStateOf("") }
     var (isPasswordError, setIsPasswordError) = rememberSaveable { mutableStateOf(false) }
     var context = LocalContext.current
+    val usersViewModel = localMainViewModel.current.usersViewModel
 
     Surface {
         Column (
@@ -96,58 +103,6 @@ fun LoginForm(
                             },
 
                         )
-//                        Row(
-//                            modifier = Modifier
-//                                .fillMaxWidth(),
-//                            horizontalArrangement = Arrangement.SpaceBetween
-//                        ) {
-//                            Button(
-//                                onClick = {
-//
-//                                },
-//                                colors = ButtonDefaults.buttonColors(Primary),
-//                                shape = RoundedCornerShape(8.dp),
-//                                modifier = Modifier
-//                                    .width(150.dp)
-//                                    .height(50.dp),
-//                                content={
-//                                        Icon(
-//                                            imageVector = Icons.Outlined.LocationOn,
-//                                            contentDescription = stringResource(R.string.icon_content_description_location),
-//                                            modifier = Modifier
-//                                                .size(25.dp)
-//                                        )
-//                                    Spacer(
-//                                        modifier = Modifier.width(8.dp)
-//                                    )
-//                                        Text(
-//                                            text = stringResource(R.string.login_text_user),
-//                                            fontSize = 18.sp,
-//                                            fontWeight = FontWeight.Bold
-//                                        )
-//
-//
-//                                }
-//                            )
-//                            Button(
-//                                onClick = {
-//
-//                                },
-//                                content={
-//                                    Icon(
-//                                        imageVector = Icons.Outlined.LocationOn,
-//                                        contentDescription = stringResource(R.string.icon_content_description_location),
-//                                        modifier = Modifier
-//                                            .size(30.dp),
-//                                    )
-//                                    Text(
-//                                        text = stringResource(R.string.login_text_user)
-//                                    )
-//
-//
-//                                }
-//                            )
-//                        }
                         InputText(
                             value = email,
                             setValue = setEmail,
@@ -157,7 +112,7 @@ fun LoginForm(
                             isError = isEmailError,
                             setError = setIsEmailError,
                             onValidate = {
-                                email.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                                it.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()
                             }
                         )
                         InputText(
@@ -169,7 +124,7 @@ fun LoginForm(
                             isError = isPasswordError,
                             setError = setIsPasswordError,
                             onValidate = {
-                                password.length < 8 || password.isBlank()
+                                it.length < 8 || it.isBlank()
                             },
                             isPassword = true
                         )
@@ -181,7 +136,18 @@ fun LoginForm(
                     content={
                         Button(
                             onClick = {
+                                val userLogged = usersViewModel.login(email, password)
+                                if(userLogged != null){
+                                    onNavigateToHome(userLogged.id, userLogged.role)
+                                    Toast.makeText(context, "Bienvenido", Toast.LENGTH_SHORT).show()
+                                }else{
+                                    Toast.makeText(
+                                        context,
+                                        "Credenciales incorrectas",
+                                        Toast.LENGTH_SHORT
 
+                                    ).show()
+                                }
                             },
                             enabled = !isEmailError && !isPasswordError,
                             colors = ButtonDefaults.buttonColors(Primary),

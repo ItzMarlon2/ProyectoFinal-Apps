@@ -1,5 +1,7 @@
 package com.example.proyectofinal.viewModel
 
-class ReviewsViewModel{
+import androidx.lifecycle.ViewModel
+
+class ReviewsViewModel: ViewModel(){
 
 }

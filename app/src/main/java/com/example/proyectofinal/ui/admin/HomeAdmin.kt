@@ -1,4 +1,4 @@
-package com.example.proyectofinal.ui.screens.admin
+package com.example.proyectofinal.ui.admin
 
 import androidx.compose.runtime.Composable
 

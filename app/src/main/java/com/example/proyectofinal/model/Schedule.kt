@@ -1,9 +1,10 @@
 package com.example.proyectofinal.model
 
-import java.time.LocalTime
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalTime
 
 class Schedule (
-    val day: String,
+    val day: DayOfWeek,
     val open: LocalTime,
     val close: LocalTime
 

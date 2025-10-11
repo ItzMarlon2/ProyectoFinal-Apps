@@ -32,6 +32,7 @@
     <string name="register_label_city">Tu residencia</string>
     <string name="register_label_city2">Ciudad de recidencia</string>
     <string name="register_label_confirm_password">Confirma tu contraseña</string>
+    <string name="register_error_confirm_password">Las contraseñas no coinciden</string>
     <string name="register_redirect_login">¿Ya tienes cuenta?</string>
     <string name="register_redirect_login2">Iniciar sesión</string>
     <string name="register_text_btn">Crear cuenta</string>
@@ -42,5 +43,7 @@
     <string name="menu_create">Crear</string>
     <string name="menu_favorites">Favoritos</string>
     <string name="menu_profile">Perfil</string>
+
+    <string name="btn_ver">Ver lugar</string>
 
 </resources>

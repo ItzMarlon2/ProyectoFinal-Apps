@@ -1,6 +1,7 @@
-package com.example.proyectofinal.ui.screens
+package com.example.proyectofinal.ui.auth
 
 import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,14 +39,20 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.proyectofinal.R
+import com.example.proyectofinal.model.Role
+import com.example.proyectofinal.model.User
 import com.example.proyectofinal.ui.components.DropDownMenu
 import com.example.proyectofinal.ui.components.InputText
+import com.example.proyectofinal.ui.navigation.localMainViewModel
 import com.example.proyectofinal.ui.theme.Primary
+import com.example.proyectofinal.viewModel.UsersViewModel
+import java.util.UUID
 
 @Composable
 fun RegisterScreen(
     onNavigateToLogin: () -> Unit,
 ){
+    val usersViewModel = localMainViewModel.current.usersViewModel
 
 
     Scaffold (
@@ -54,13 +61,13 @@ fun RegisterScreen(
                     TopAppBarRegister()
                 }
             ){ padding ->
-                ScrollContent(padding=padding, onNavigateToLogin)
+                ScrollContent(padding=padding, onNavigateToLogin, usersViewModel)
             }
 }
 
 
 @Composable
-fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit){
+fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersViewModel: UsersViewModel){
     val (name, setName) = rememberSaveable { mutableStateOf("") }
     val (isErrorName, setIsErrorName) = rememberSaveable { mutableStateOf(false) }
     val (username, setUsername) = rememberSaveable { mutableStateOf("") }
@@ -185,7 +192,7 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit){
                         isError = isPasswordError,
                         setError = setIsPasswordError,
                         onValidate = {
-                            password.length < 8 || password.isBlank()
+                            it.length < 8 || it.isBlank()
                         }
                     )
                     InputText(
@@ -194,11 +201,11 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit){
                         isPassword = true,
                         text = stringResource(R.string.register_label_confirm_password),
                         place = stringResource(R.string.login_placeholder_password),
-                        textError = stringResource(R.string.login_error_message_password),
+                        textError = stringResource(R.string.register_error_confirm_password),
                         isError = isConfirmPasswordError,
                         setError = setIsConfirmPasswordError,
                         onValidate = {
-                            confirmPassword != password
+                            it != password
                         }
                     )
                     Column(
@@ -207,7 +214,24 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit){
                         content={
                             Button(
                                 onClick = {
+                                    val user= User(
+                                        id = UUID.randomUUID().toString(),
+                                        nombre = name,
+                                        username = username,
+                                        email = email,
+                                        city = city,
+                                        password = password,
+                                        role = Role.USER
 
+                                    )
+                                    usersViewModel.create(user)
+                                    onNavigateToLogin()
+                                    Toast.makeText(
+                                        context,
+                                        "Usuario registrado correctamente",
+                                        Toast.LENGTH_SHORT
+
+                                    ).show()
                                 },
                                 colors = ButtonDefaults.buttonColors(Primary),
                                 shape = RoundedCornerShape(8.dp),
