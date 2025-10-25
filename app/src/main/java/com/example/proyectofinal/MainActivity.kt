@@ -28,11 +28,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val gradientColors = listOf(
-            BackgroundColorFromHSL,
-            MutedColorFromHSL.copy(alpha = 0.3f),
-            Primary.copy(alpha = 0.3f)
-        )
+
 
         val mainViewModel = MainViewModel(
             placesViewModel,
@@ -46,14 +42,7 @@ class MainActivity : ComponentActivity() {
 
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                brush = Brush.linearGradient(
-                                    colors = gradientColors,
-                                    start = Offset.Zero,
-                                    end = Offset.Infinite
-                                )
-                            ),
+                            .fillMaxSize(),
                         contentAlignment = Alignment.Center,
                         content = {
                             Navigation(mainViewModel = mainViewModel)

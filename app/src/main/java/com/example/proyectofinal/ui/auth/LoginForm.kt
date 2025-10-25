@@ -4,11 +4,15 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,6 +30,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -40,6 +47,9 @@ import com.example.proyectofinal.model.Role
 import com.example.proyectofinal.ui.components.InputText
 import com.example.proyectofinal.ui.components.ToggleButtonGroup
 import com.example.proyectofinal.ui.navigation.localMainViewModel
+import com.example.proyectofinal.ui.theme.BackgroundColorFromHSL
+import com.example.proyectofinal.ui.theme.BorderBoxes
+import com.example.proyectofinal.ui.theme.MutedColorFromHSL
 import com.example.proyectofinal.ui.theme.Primary
 import com.example.proyectofinal.ui.theme.PrimaryLight
 import com.example.proyectofinal.viewModel.UsersViewModel
@@ -53,18 +63,32 @@ fun LoginForm(
     ){
     val (email, setEmail) = rememberSaveable { mutableStateOf("") }
     val (typeUser, setTypeUser) = rememberSaveable { mutableStateOf(Role.USER) }
-    var (isEmailError, setIsEmailError) = rememberSaveable { mutableStateOf(false) }
-    var (password, setPassword) = rememberSaveable { mutableStateOf("") }
-    var (isPasswordError, setIsPasswordError) = rememberSaveable { mutableStateOf(false) }
-    var context = LocalContext.current
+    val (isEmailError, setIsEmailError) = rememberSaveable { mutableStateOf(false) }
+    val (password, setPassword) = rememberSaveable { mutableStateOf("") }
+    val (isPasswordError, setIsPasswordError) = rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
     val usersViewModel = localMainViewModel.current.usersViewModel
+    val gradientColors = listOf(
+        BackgroundColorFromHSL,
+        MutedColorFromHSL.copy(alpha = 0.3f),
+        Primary.copy(alpha = 0.3f)
+    )
 
-    Surface {
+    Surface (
+    ){
         Column (
             modifier = Modifier
-                .padding(40.dp),
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = gradientColors,
+                        start = Offset.Zero,
+                        end = Offset.Infinite
+                    )
+                )
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(space = 80.dp),
+            verticalArrangement = Arrangement.spacedBy(space = 40.dp),
             content={
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -79,7 +103,7 @@ fun LoginForm(
                             content = {
                                 Text(
                                     text = stringResource(R.string.login_app_title),
-                                    style = MaterialTheme.typography.titleLarge,
+                                    style = MaterialTheme.typography.headlineLarge,
                                     color = Color.Black,
                                     fontSize = 35.sp,
                                     fontWeight = FontWeight.Bold,
@@ -93,92 +117,87 @@ fun LoginForm(
                         )
                     }
                 )
-                Column (
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(space = 20.dp),
-                    content={
-                        ToggleButtonGroup(
-                            onButtonSelected = { selectedButtonType ->
-                                setTypeUser(selectedButtonType)
-                            },
-
-                        )
-                        InputText(
-                            value = email,
-                            setValue = setEmail,
-                            text = stringResource(R.string.login_label_email),
-                            place = stringResource(R.string.login_placeholder_email),
-                            textError = stringResource(R.string.login_error_message_email),
-                            isError = isEmailError,
-                            setError = setIsEmailError,
-                            onValidate = {
-                                it.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()
-                            }
-                        )
-                        InputText(
-                            value = password,
-                            setValue = setPassword,
-                            text = stringResource(R.string.login_label_password),
-                            place = stringResource(R.string.login_placeholder_password),
-                            textError = stringResource(R.string.login_error_message_password),
-                            isError = isPasswordError,
-                            setError = setIsPasswordError,
-                            onValidate = {
-                                it.length < 8 || it.isBlank()
-                            },
-                            isPassword = true
-                        )
-                    }
-                )
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(space = 20.dp),
-                    content={
-                        Button(
-                            onClick = {
-                                val userLogged = usersViewModel.login(email, password)
-                                if(userLogged != null){
-                                    onNavigateToHome(userLogged.id, userLogged.role)
-                                    Toast.makeText(context, "Bienvenido", Toast.LENGTH_SHORT).show()
-                                }else{
-                                    Toast.makeText(
-                                        context,
-                                        "Credenciales incorrectas",
-                                        Toast.LENGTH_SHORT
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(20.dp))
+                        .border(1.dp, BorderBoxes, RoundedCornerShape(8.dp))
+                        .background(Color.White)
+                        .padding(20.dp),
 
-                                    ).show()
-                                }
-                            },
-                            enabled = !isEmailError && !isPasswordError,
-                            colors = ButtonDefaults.buttonColors(Primary),
-                            shape = RoundedCornerShape(8.dp),
-                            modifier = Modifier
-                                .width(250.dp)
-                                .height(50.dp),
-                            content={
-                                Text(
-                                    text = stringResource(R.string.login_button_text)
-                                )
-                            }
-                        )
-                        Text(
-                            text = stringResource(R.string.login_text_forgot_password),
-                            color = Primary,
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                textDecoration = TextDecoration.Underline // Subrayado para que parezca un enlace
-                            ),
-                            modifier = Modifier
-                                .padding(horizontal = 5.dp)
-                                .clickable {
-                                    onNavigateToForgotPassword()
+                ) {
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(space = 20.dp),
+                        content={
+                            ToggleButtonGroup(
+                                onButtonSelected = { selectedButtonType ->
+                                    setTypeUser(selectedButtonType)
                                 },
-                        )
-                        Row {
-                            Text(
-                                text = stringResource(R.string.login_text_signuphere)
+
+                                )
+                            InputText(
+                                value = email,
+                                setValue = setEmail,
+                                text = stringResource(R.string.login_label_email),
+                                place = stringResource(R.string.login_placeholder_email),
+                                textError = stringResource(R.string.login_error_message_email),
+                                isError = isEmailError,
+                                setError = setIsEmailError,
+                                onValidate = {
+                                    it.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                                }
+                            )
+                            InputText(
+                                value = password,
+                                setValue = setPassword,
+                                text = stringResource(R.string.login_label_password),
+                                place = stringResource(R.string.login_placeholder_password),
+                                textError = stringResource(R.string.login_error_message_password),
+                                isError = isPasswordError,
+                                setError = setIsPasswordError,
+                                onValidate = {
+                                    it.length < 8 || it.isBlank()
+                                },
+                                isPassword = true
+                            )
+                        }
+                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(space = 20.dp),
+                        content={
+                            Button(
+                                onClick = {
+                                    val userLogged = usersViewModel.login(email, password)
+                                    if(userLogged != null){
+                                        onNavigateToHome(userLogged.id, userLogged.role)
+                                        Toast.makeText(context, "Bienvenido", Toast.LENGTH_SHORT).show()
+                                    }else{
+                                        Toast.makeText(
+                                            context,
+                                            "Credenciales incorrectas",
+                                            Toast.LENGTH_SHORT
+
+                                        ).show()
+                                    }
+                                },
+                                enabled = !isEmailError && !isPasswordError,
+                                colors = ButtonDefaults.buttonColors(Primary),
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier
+                                    .width(250.dp)
+                                    .height(50.dp),
+                                content={
+                                    Text(
+                                        text = stringResource(R.string.login_button_text)
+                                    )
+                                }
                             )
                             Text(
-                                text = stringResource(R.string.login_text_signuphere_navigate),
+                                text = stringResource(R.string.login_text_forgot_password),
                                 color = Primary,
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     textDecoration = TextDecoration.Underline // Subrayado para que parezca un enlace
@@ -186,12 +205,36 @@ fun LoginForm(
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
                                     .clickable {
-                                        onNavigateToRegister()
+                                        onNavigateToForgotPassword()
                                     },
                             )
+                            Divider(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp),
+                                thickness = 1.dp,
+                                color = Color.LightGray
+                            )
+                            Row {
+                                Text(
+                                    text = stringResource(R.string.login_text_signuphere)
+                                )
+                                Text(
+                                    text = stringResource(R.string.login_text_signuphere_navigate),
+                                    color = Primary,
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        textDecoration = TextDecoration.Underline // Subrayado para que parezca un enlace
+                                    ),
+                                    modifier = Modifier
+                                        .padding(horizontal = 5.dp)
+                                        .clickable {
+                                            onNavigateToRegister()
+                                        },
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         )
     }
@@ -205,6 +248,10 @@ fun IconInContainer() {
     Box(
         modifier = Modifier
             .size(120.dp)
+            .shadow(
+                elevation = 8.dp, // Elige la elevación que prefieras
+                shape = RoundedCornerShape(borderRadius) // Usa la misma forma que el contenedor
+            )
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(Primary, PrimaryLight)

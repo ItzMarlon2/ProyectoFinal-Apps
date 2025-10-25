@@ -27,6 +27,7 @@ fun InputText(
     setValue: (String) -> Unit,
     text: String,
     place: String,
+    multiline: Boolean = false,
     textError: String,
     isError: Boolean,
     setError: (Boolean) -> Unit,
@@ -70,7 +71,9 @@ fun InputText(
                     disabledBorderColor = Color.Transparent
                 ),
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                singleLine = !multiline,
+                minLines = if(multiline) 3 else 1
             )
         }
 

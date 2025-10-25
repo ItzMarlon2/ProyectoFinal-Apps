@@ -9,5 +9,6 @@ data class Place(
     val images: List<String>,
     val phones: List<String>,
     val type: PlaceType,
-    val schedules: List<Schedule>
+    val schedules: List<Schedule>,
+    val ownerId: String
 )

@@ -28,10 +28,10 @@ class UsersViewModel: ViewModel() {
             ),
             User(
                 id = "2",
-                nombre = "carlos",
-                username = "carlos123",
+                nombre = "test",
+                username = "test123",
                 role = Role.USER,
-                email = "carlos@gmail.com",
+                email = "test@gmail.com",
                 password = "12345678",
                 city = "bogota"
             )

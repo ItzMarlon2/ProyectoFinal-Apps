@@ -13,6 +13,7 @@ import com.example.proyectofinal.ui.user.nav.ContentUser
 @Composable
 fun HomeUser(
     onNavigatePlaceDetail: (String) -> Unit,
+    onNavigateToLogin: () -> Unit,
     mainNavController: NavHostController
 ){
     val navController = rememberNavController()
@@ -27,7 +28,8 @@ fun HomeUser(
         ContentUser(
             padding=padding,
             navController =navController,
-            onNavigatePlaceDetail=onNavigatePlaceDetail
+            onNavigatePlaceDetail=onNavigatePlaceDetail,
+            onNavigateToLogin=onNavigateToLogin
         )
 
     }

@@ -1,10 +1,12 @@
 package com.example.proyectofinal.ui.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,11 +18,9 @@ import com.example.proyectofinal.ui.auth.RegisterScreen
 import com.example.proyectofinal.ui.user.HomeUser
 import com.example.proyectofinal.ui.places.CreatePlaceScreen
 import com.example.proyectofinal.ui.places.PlaceDetail
-import com.example.proyectofinal.ui.user.nav.RouteTab
 import com.example.proyectofinal.utils.SharedPrefsUtil
 import com.example.proyectofinal.viewModel.MainViewModel
-import com.example.proyectofinal.viewModel.PlacesViewModel
-import com.example.proyectofinal.viewModel.UsersViewModel
+import kotlin.math.log
 
 val localMainViewModel =  staticCompositionLocalOf<MainViewModel> {error("MainViewModel not provided")}
 @Composable
@@ -29,7 +29,7 @@ fun Navigation(mainViewModel: MainViewModel){
     val context = LocalContext.current
     val navController = rememberNavController()
     val user = SharedPrefsUtil.getPreferences(context)
-
+    println("usuario: $user")
     val startDestination=if(user.isEmpty()){
         RouteScreen.Login
     }else{
@@ -43,7 +43,7 @@ fun Navigation(mainViewModel: MainViewModel){
     CompositionLocalProvider(localMainViewModel provides mainViewModel) {
         NavHost(
             navController = navController,
-            startDestination = startDestination ,
+            startDestination = startDestination,
 
             ){
             composable<RouteScreen.Login>{
@@ -74,13 +74,15 @@ fun Navigation(mainViewModel: MainViewModel){
             composable<RouteScreen.HomeUser>{
                 HomeUser(onNavigatePlaceDetail ={
                     navController.navigate(RouteScreen.PlaceDetail(it))
-                }, navController)
+                }, onNavigateToLogin = {
+                    navController.navigate(RouteScreen.Login)
+                },navController)
 
             }
 
             composable<RouteScreen.CreatePlace>{
                 CreatePlaceScreen(
-
+                    userId = user["userId"],
                     onNavigateBack = {
                         navController.popBackStack()
                     }
@@ -90,8 +92,12 @@ fun Navigation(mainViewModel: MainViewModel){
 
             composable<RouteScreen.PlaceDetail>{
                 val args = it.toRoute<RouteScreen.PlaceDetail>()
-                PlaceDetail(id = args.id )
+                PlaceDetail(id = args.id, onNavigateBack = {
+                    navController.popBackStack()
+                })
             }
+
+            composable<RouteScreen.HomeAdmin>{}
 
         }
     }
