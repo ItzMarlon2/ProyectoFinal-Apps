@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -55,6 +56,12 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.coil.compose)
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+    implementation(libs.maps.android)
+    implementation(libs.maps.compose)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
+    implementation(libs.cloudinary.android)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -15,6 +15,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -22,7 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.proyectofinal.ui.components.PlacesLits
+import com.example.proyectofinal.ui.components.PlacesList
 import com.example.proyectofinal.ui.navigation.localMainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +35,7 @@ fun Search(
     val placesViewModel = localMainViewModel.current.placesViewModel
     var query by rememberSaveable { mutableStateOf("") }
     var expanded  by rememberSaveable { mutableStateOf(false) }
+    val isRefreshing by placesViewModel.isRefreshing.collectAsState()
 
     Column (
         modifier = Modifier.fillMaxSize(),
@@ -74,10 +76,12 @@ fun Search(
         }
         if(query.isNotEmpty()){
             val places = placesViewModel.findByName(query)
-            PlacesLits(
+            PlacesList(
                 places = places,
                 padding = padding,
-                onNavigatePlaceDetail = onNavigatePlaceDetail
+                onNavigatePlaceDetail = onNavigatePlaceDetail,
+                isRefreshing = isRefreshing,
+                onRefresh = {placesViewModel.getAll()}
             )
         }else{
             Box(

@@ -25,6 +25,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -45,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.example.proyectofinal.R
 import com.example.proyectofinal.model.Role
 import com.example.proyectofinal.ui.components.InputText
+import com.example.proyectofinal.ui.components.OperationResultHandler
 import com.example.proyectofinal.ui.components.ToggleButtonGroup
 import com.example.proyectofinal.ui.navigation.localMainViewModel
 import com.example.proyectofinal.ui.theme.BackgroundColorFromHSL
@@ -68,6 +71,7 @@ fun LoginForm(
     val (isPasswordError, setIsPasswordError) = rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     val usersViewModel = localMainViewModel.current.usersViewModel
+    val userResult by usersViewModel.userResult.collectAsState()
     val gradientColors = listOf(
         BackgroundColorFromHSL,
         MutedColorFromHSL.copy(alpha = 0.3f),
@@ -171,18 +175,8 @@ fun LoginForm(
                         content={
                             Button(
                                 onClick = {
-                                    val userLogged = usersViewModel.login(email, password)
-                                    if(userLogged != null){
-                                        onNavigateToHome(userLogged.id, userLogged.role)
-                                        Toast.makeText(context, "Bienvenido", Toast.LENGTH_SHORT).show()
-                                    }else{
-                                        Toast.makeText(
-                                            context,
-                                            "Credenciales incorrectas",
-                                            Toast.LENGTH_SHORT
+                                   usersViewModel.login(email, password)
 
-                                        ).show()
-                                    }
                                 },
                                 enabled = !isEmailError && !isPasswordError,
                                 colors = ButtonDefaults.buttonColors(Primary),
@@ -194,6 +188,16 @@ fun LoginForm(
                                     Text(
                                         text = stringResource(R.string.login_button_text)
                                     )
+                                }
+                            )
+                            OperationResultHandler(
+                                result = userResult,
+                                onSuccess = {
+                                    onNavigateToHome(usersViewModel.currentUser.value!!.id, usersViewModel.currentUser.value!!.role)
+                                    usersViewModel.resetOperationResult()
+                                },
+                                onFailure = {
+                                    usersViewModel.resetOperationResult()
                                 }
                             )
                             Text(

@@ -12,9 +12,12 @@ import com.example.proyectofinal.ui.user.nav.ContentUser
 
 @Composable
 fun HomeUser(
+    userId: String,
     onNavigatePlaceDetail: (String) -> Unit,
     onNavigateToLogin: () -> Unit,
-    mainNavController: NavHostController
+    mainNavController: NavHostController,
+    logout: () -> Unit,
+    onNavigateToCreatePlace: () -> Unit
 ){
     val navController = rememberNavController()
 
@@ -26,10 +29,13 @@ fun HomeUser(
         }
     ){ padding ->
         ContentUser(
+            userId=userId,
             padding=padding,
             navController =navController,
             onNavigatePlaceDetail=onNavigatePlaceDetail,
-            onNavigateToLogin=onNavigateToLogin
+            onNavigateToLogin=onNavigateToLogin,
+            logout = logout,
+            onNavigateToCreatePlace = onNavigateToCreatePlace
         )
 
     }

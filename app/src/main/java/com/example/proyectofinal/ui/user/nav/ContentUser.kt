@@ -22,7 +22,15 @@ import com.example.proyectofinal.utils.SharedPrefsUtil
 import com.example.proyectofinal.viewModel.PlacesViewModel
 
 @Composable
-fun ContentUser(padding: PaddingValues, navController: NavHostController, onNavigatePlaceDetail: (String) -> Unit, onNavigateToLogin: () -> Unit){
+fun ContentUser(
+    userId: String,
+    padding: PaddingValues,
+    navController: NavHostController,
+    onNavigatePlaceDetail: (String) -> Unit,
+    onNavigateToLogin: () -> Unit,
+    logout: () -> Unit,
+    onNavigateToCreatePlace: () -> Unit
+){
 
     val context = LocalContext.current
     NavHost(
@@ -45,12 +53,17 @@ fun ContentUser(padding: PaddingValues, navController: NavHostController, onNavi
         }
         composable<RouteTab.Profile>{
             Profile(
+                userId=userId,
                 padding=padding,
                 logout={
+                    logout()
                     SharedPrefsUtil.clearPreferences(context)
                 },
-                onNavigateToLogin= onNavigateToLogin
+                onNavigateToLogin= onNavigateToLogin,
+                onNavigatePlaceDetail = onNavigatePlaceDetail,
+                onNavigateToCreatePlace = onNavigateToCreatePlace
                 )
+
         }
 
     }

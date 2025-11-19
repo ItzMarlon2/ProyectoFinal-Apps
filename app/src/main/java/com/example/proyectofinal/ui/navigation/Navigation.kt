@@ -1,12 +1,19 @@
 package com.example.proyectofinal.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,15 +27,17 @@ import com.example.proyectofinal.ui.places.CreatePlaceScreen
 import com.example.proyectofinal.ui.places.PlaceDetail
 import com.example.proyectofinal.utils.SharedPrefsUtil
 import com.example.proyectofinal.viewModel.MainViewModel
+import com.example.proyectofinal.viewModel.UsersViewModel
 import kotlin.math.log
 
 val localMainViewModel =  staticCompositionLocalOf<MainViewModel> {error("MainViewModel not provided")}
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Navigation(mainViewModel: MainViewModel){
+fun Navigation(mainViewModel: MainViewModel, usersViewModel: UsersViewModel = viewModel()){
 
     val context = LocalContext.current
     val navController = rememberNavController()
-    val user = SharedPrefsUtil.getPreferences(context)
+    var user by remember { mutableStateOf(SharedPrefsUtil.getPreferences(context)) }
     println("usuario: $user")
     val startDestination=if(user.isEmpty()){
         RouteScreen.Login
@@ -52,6 +61,7 @@ fun Navigation(mainViewModel: MainViewModel){
                     onNavigateToForgotPassword = { navController.navigate(RouteScreen.ForgotPassword) },
                     onNavigateToHome = {userId, role ->
                         SharedPrefsUtil.savePreferences(context, userId, role)
+                        user = SharedPrefsUtil.getPreferences(context)
                         if(role == Role.ADMIN){
                             navController.navigate(RouteScreen.HomeAdmin)
                         }else{
@@ -72,17 +82,33 @@ fun Navigation(mainViewModel: MainViewModel){
             }
 
             composable<RouteScreen.HomeUser>{
-                HomeUser(onNavigatePlaceDetail ={
+                HomeUser(
+
+                    userId = user["userId"]!!,
+                    onNavigatePlaceDetail ={
                     navController.navigate(RouteScreen.PlaceDetail(it))
                 }, onNavigateToLogin = {
-                    navController.navigate(RouteScreen.Login)
-                },navController)
+                    navController.navigate(RouteScreen.Login){
+                        popUpTo(navController.graph.startDestinationId){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                    navController,
+                    logout ={
+                        usersViewModel.logOut()
+                    },
+                    onNavigateToCreatePlace = {
+                        navController.navigate(RouteScreen.CreatePlace)
+                    }
+                    )
 
             }
 
             composable<RouteScreen.CreatePlace>{
                 CreatePlaceScreen(
-                    userId = user["userId"],
+                    userId = user["userId"] ?: "",
                     onNavigateBack = {
                         navController.popBackStack()
                     }
@@ -92,7 +118,8 @@ fun Navigation(mainViewModel: MainViewModel){
 
             composable<RouteScreen.PlaceDetail>{
                 val args = it.toRoute<RouteScreen.PlaceDetail>()
-                PlaceDetail(id = args.id, onNavigateBack = {
+
+                PlaceDetail(placeId = args.id, userId = user["userId"] ?: "" , onNavigateBack = {
                     navController.popBackStack()
                 })
             }

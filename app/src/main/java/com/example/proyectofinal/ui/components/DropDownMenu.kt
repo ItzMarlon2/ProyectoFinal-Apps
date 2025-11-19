@@ -65,11 +65,7 @@ fun DropDownMenu(
                         // La actualización del 'selectedItem' viene de 'onItemSelected'.
                     },
                     supportingText = {},
-                    label = {
-                        Text(
-                            text = stringResource(R.string.register_label_city)
-                        )
-                    },
+                    label = { },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                     }

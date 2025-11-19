@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -13,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -33,7 +36,8 @@ fun InputText(
     setError: (Boolean) -> Unit,
     onValidate: (String) -> Boolean,
     modifier: Modifier = Modifier,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    icon: ImageVector? = null
 ){
     Column (
         verticalArrangement = Arrangement.spacedBy(space = 6.dp),
@@ -41,7 +45,7 @@ fun InputText(
             Text(
                 text=text,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.Bold
             )
             OutlinedTextField(
 
@@ -50,6 +54,17 @@ fun InputText(
                     Text(text = place, color = Color.Gray)
 
                 },
+                leadingIcon = if (icon != null) {
+                    {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null, // Puedes pasar una descripción para accesibilidad
+                        tint = Primary // Opcional: colorea el icono
+                    )
+                }
+                    }else{
+                        null
+                    },
                 isError = isError,
                 supportingText = {
                     if (isError) {

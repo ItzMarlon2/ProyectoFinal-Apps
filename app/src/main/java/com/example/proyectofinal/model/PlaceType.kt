@@ -1,8 +1,9 @@
 package com.example.proyectofinal.model
 
 enum class PlaceType(
-    name:String
+    val displayName:String
 ) {
+    DEFAULT("Por defecto"),
     RESTAURANTE("Restaurante"),
     BAR("Bar"),
     CAFETERIA("Cafeteria"),

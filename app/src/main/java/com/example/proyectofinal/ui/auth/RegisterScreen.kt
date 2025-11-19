@@ -27,8 +27,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,12 +43,16 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.proyectofinal.R
+import com.example.proyectofinal.model.City
+import com.example.proyectofinal.model.PlaceType
 import com.example.proyectofinal.model.Role
 import com.example.proyectofinal.model.User
 import com.example.proyectofinal.ui.components.DropDownMenu
 import com.example.proyectofinal.ui.components.InputText
+import com.example.proyectofinal.ui.components.OperationResultHandler
 import com.example.proyectofinal.ui.navigation.localMainViewModel
 import com.example.proyectofinal.ui.theme.Primary
+import com.example.proyectofinal.utils.RequestResult
 import com.example.proyectofinal.viewModel.UsersViewModel
 import java.util.UUID
 
@@ -53,6 +61,8 @@ fun RegisterScreen(
     onNavigateToLogin: () -> Unit,
 ){
     val usersViewModel = localMainViewModel.current.usersViewModel
+    val userResult by usersViewModel.userResult.collectAsState()
+
 
 
     Scaffold (
@@ -61,31 +71,25 @@ fun RegisterScreen(
                     TopAppBarRegister()
                 }
             ){ padding ->
-                ScrollContent(padding=padding, onNavigateToLogin, usersViewModel)
+                ScrollContent(padding=padding, onNavigateToLogin, usersViewModel, userResult)
             }
 }
 
 
 @Composable
-fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersViewModel: UsersViewModel){
+fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersViewModel: UsersViewModel, userResult: RequestResult?){
     val (name, setName) = rememberSaveable { mutableStateOf("") }
     val (isErrorName, setIsErrorName) = rememberSaveable { mutableStateOf(false) }
     val (username, setUsername) = rememberSaveable { mutableStateOf("") }
     val (isErrorUsername, setIsErrorUsername) = rememberSaveable { mutableStateOf(false) }
     val (email, setEmail) = rememberSaveable { mutableStateOf("") }
-    val (city, setCity) = rememberSaveable { mutableStateOf("") }
     var (isEmailError, setIsEmailError) = rememberSaveable { mutableStateOf(false) }
     var (password, setPassword) = rememberSaveable { mutableStateOf("") }
     var (isPasswordError, setIsPasswordError) = rememberSaveable { mutableStateOf(false) }
     var (confirmPassword, setConfirmPassword) = rememberSaveable { mutableStateOf("") }
     var (isConfirmPasswordError, setIsConfirmPasswordError) = rememberSaveable { mutableStateOf(false) }
-    val cityOptions = listOf(
-        "Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena",
-        "Ciudad de México", "Guadalajara", "Monterrey",
-        "Buenos Aires", "Córdoba", "Rosario",
-        "Lima", "Arequipa",
-        "Santiago"
-    )
+    var selectedCity by rememberSaveable { mutableStateOf<City?>(null) }
+    val cityOptions = remember { City.entries.map {it.displayName} }
     var context = LocalContext.current
     Column (
         modifier = Modifier
@@ -176,10 +180,10 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersVi
 
                     DropDownMenu(
                         items = cityOptions,           // La lista de strings para las opciones
-                        selectedItem = city,
+                        selectedItem = selectedCity?.displayName ?: "Selecciona una ciudad",
                         text = stringResource(R.string.register_label_city2),// El estado actual de la ciudad seleccionada
                         onItemSelected = { newCity ->  // Lambda que se ejecuta cuando se selecciona un nuevo ítem
-                            setCity(newCity)           // Actualiza el estado 'city' con la nueva selección
+                            selectedCity = City.entries.find { it.displayName == newCity } // Busca la ciudad correspondiente al nombre seleccionado(newCity)           // Actualiza el estado 'city' con la nueva selección
                         },
                     )
                     InputText(
@@ -208,6 +212,7 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersVi
                             it != password
                         }
                     )
+
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(space = 20.dp),
@@ -215,23 +220,15 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersVi
                             Button(
                                 onClick = {
                                     val user= User(
-                                        id = UUID.randomUUID().toString(),
                                         nombre = name,
                                         username = username,
                                         email = email,
-                                        city = city,
+                                        city = selectedCity,
                                         password = password,
                                         role = Role.USER
 
                                     )
                                     usersViewModel.create(user)
-                                    onNavigateToLogin()
-                                    Toast.makeText(
-                                        context,
-                                        "Usuario registrado correctamente",
-                                        Toast.LENGTH_SHORT
-
-                                    ).show()
                                 },
                                 colors = ButtonDefaults.buttonColors(Primary),
                                 shape = RoundedCornerShape(8.dp),
@@ -242,6 +239,17 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersVi
                                     Text(
                                         text = stringResource(R.string.register_text_btn)
                                     )
+                                }
+                            )
+
+                            OperationResultHandler(
+                                result = userResult,
+                                onSuccess = {
+                                    onNavigateToLogin()
+                                    usersViewModel.resetOperationResult()
+                                },
+                                onFailure = {
+                                    usersViewModel.resetOperationResult()
                                 }
                             )
 
@@ -271,6 +279,7 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersVi
     )
 
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
