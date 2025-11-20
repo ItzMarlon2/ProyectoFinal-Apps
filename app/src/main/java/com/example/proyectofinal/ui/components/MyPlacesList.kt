@@ -162,7 +162,7 @@ fun LazyListScope.myPlacesList(
                                         )
 
                                         Text(
-                                            text = "($totalReviews reseñas)",
+                                            text = "($totalReviews ${stringResource(R.string.reseñas)})",
                                             color = Color.Gray,
                                             fontSize = 15.sp
                                         )
@@ -188,9 +188,9 @@ fun LazyListScope.myPlacesList(
                                     ) {
                                     val todaySchedule = it.schedules.find { it.day == todayName }
                                     val (statusText, statusColor) = if (todaySchedule?.isOpen == true) {
-                                        "Abierto" to Color(0xFF388E3C)
+                                        stringResource(R.string.abierto) to Color(0xFF388E3C)
                                     } else {
-                                        "Cerrado" to Color(0xFFD32F2F)
+                                        stringResource(R.string.cerrado) to Color(0xFFD32F2F)
                                     }
                                     Text(
                                         text = " ${todaySchedule?.openTime} - ${todaySchedule?.closeTime}",
@@ -212,31 +212,6 @@ fun LazyListScope.myPlacesList(
                     },
                 )
             }
-//            ListItem(
-//                modifier = Modifier
-//                    .clip(MaterialTheme.shapes.large)
-//                    .clickable{
-//
-//                    },
-//                headlineContent = { Text(it.title) },
-//                supportingContent = { Text(it.description) },
-//                leadingContent = {
-//                    AsyncImage(
-//                    modifier = Modifier
-//                        .width(120.dp)
-//                        .height(120.dp)
-//                        .clip(RoundedCornerShape(
-//                            topStart = 16.dp,
-//                            topEnd = 16.dp,
-//                            bottomStart = 0.dp,
-//                            bottomEnd = 0.dp
-//                        ))
-//                        ,
-//                    model = it.images[0],
-//                    contentDescription = it.title,
-//                    contentScale = ContentScale.Crop
-//                )},
-//            )
 
         }
     }

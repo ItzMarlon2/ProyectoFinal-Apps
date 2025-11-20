@@ -22,16 +22,16 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.proyectofinal.R
 import com.example.proyectofinal.ui.theme.Primary
 
-@OptIn(ExperimentalMaterial3Api::class) // ExposedDropdownMenuBox es experimental
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropDownMenu(
     items: List<String>,
     text: String,
-    selectedItem: String, // El elemento actualmente seleccionado, gestionado por el padre
-    onItemSelected: (String) -> Unit, // Callback para notificar al padre de una nueva selección
-    modifier: Modifier = Modifier // Añadir un modificador es buena práctica
+    selectedItem: String,
+    onItemSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) } // Usar 'by' para delegados de propiedad
+    var expanded by remember { mutableStateOf(false) }
 
     Column(
         content={
@@ -44,10 +44,10 @@ fun DropDownMenu(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded },
 
-                modifier = modifier // Aplicar el modificador aquí
+                modifier = modifier
             ) {
                 OutlinedTextField(
-                    modifier = Modifier.menuAnchor().fillMaxWidth(), // Necesario para anclar el menú al TextField
+                    modifier = Modifier.menuAnchor().fillMaxWidth(),
                     readOnly = true,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = Color.LightGray.copy(alpha = 0.4f),
@@ -57,12 +57,9 @@ fun DropDownMenu(
                         unfocusedBorderColor = Color.Transparent,
                         disabledBorderColor = Color.Transparent
                     ),
-                    value = selectedItem, // <--- CAMBIO CLAVE: Usa el estado del elemento seleccionado
+                    value = selectedItem,
                     onValueChange = {
-                        // Esta lambda está aquí por la API, pero como es readOnly
-                        // y la selección se maneja en DropdownMenuItem,
-                        // no necesitas hacer nada aquí específicamente con 'it'.
-                        // La actualización del 'selectedItem' viene de 'onItemSelected'.
+
                     },
                     supportingText = {},
                     label = { },
@@ -73,12 +70,12 @@ fun DropDownMenu(
                 ExposedDropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                ) { // No necesitas el parámetro 'content =' explícitamente aquí
+                ) {
                     items.forEach { item ->
                         DropdownMenuItem(
                             text = { Text(text = item) },
                             onClick = {
-                                onItemSelected(item) // <--- CAMBIO CLAVE: Notifica al padre
+                                onItemSelected(item)
                                 expanded = false
                             }
                         )

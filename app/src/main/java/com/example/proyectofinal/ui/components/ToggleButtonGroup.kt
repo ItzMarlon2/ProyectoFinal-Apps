@@ -30,9 +30,6 @@ import com.example.proyectofinal.R
 import com.example.proyectofinal.model.Role
 import com.example.proyectofinal.ui.theme.Primary
 
-const val USER_TYPE = "usuario"
-const val MODERATOR_TYPE = "moderador"
-
 
 @Composable
 fun ToggleButtonGroup(

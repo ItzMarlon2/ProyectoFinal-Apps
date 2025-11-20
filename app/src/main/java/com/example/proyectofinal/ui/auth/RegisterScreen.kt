@@ -115,7 +115,7 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersVi
                     )
                     Column (
                         horizontalAlignment = Alignment.Start,
-                        modifier = Modifier.padding(start = 16.dp), // Añade padding horizontal para separación
+                        modifier = Modifier.padding(start = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(space = 2.dp),
                         content={
                             Text(
@@ -180,11 +180,11 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersVi
                     )
 
                     DropDownMenu(
-                        items = cityOptions,           // La lista de strings para las opciones
+                        items = cityOptions,
                         selectedItem = selectedCity?.displayName ?: "Selecciona una ciudad",
-                        text = stringResource(R.string.register_label_city2),// El estado actual de la ciudad seleccionada
-                        onItemSelected = { newCity ->  // Lambda que se ejecuta cuando se selecciona un nuevo ítem
-                            selectedCity = City.entries.find { it.displayName == newCity } // Busca la ciudad correspondiente al nombre seleccionado(newCity)           // Actualiza el estado 'city' con la nueva selección
+                        text = stringResource(R.string.register_label_city2),
+                        onItemSelected = { newCity ->
+                            selectedCity = City.entries.find { it.displayName == newCity }
                         },
                     )
                     InputText(
@@ -262,7 +262,7 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersVi
                                     text = stringResource(R.string.register_redirect_login2),
                                     color = Primary,
                                     style = MaterialTheme.typography.bodyLarge.copy(
-                                        textDecoration = TextDecoration.Underline // Subrayado para que parezca un enlace
+                                        textDecoration = TextDecoration.Underline
                                     ),
                                     modifier = Modifier
                                         .padding(horizontal = 5.dp)
@@ -291,7 +291,7 @@ fun TopAppBarRegister(onNavigateBack: () -> Unit = {}){
         title={
             Column(
                 horizontalAlignment = Alignment.Start,
-                modifier = Modifier.padding(start = 16.dp), // Añade padding horizontal para separación
+                modifier = Modifier.padding(start = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(space = 2.dp),
                 content={
                     Text(
@@ -313,7 +313,7 @@ fun TopAppBarRegister(onNavigateBack: () -> Unit = {}){
             IconButton (onClick = onNavigateBack) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowBack,
-                    contentDescription = "Localized description"
+                    contentDescription = null
                 )
             }
         },

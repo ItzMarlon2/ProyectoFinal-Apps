@@ -1,5 +1,7 @@
 package com.example.proyectofinal.ui.user.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,10 +24,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.proyectofinal.R
 import com.example.proyectofinal.ui.components.PlacesList
 import com.example.proyectofinal.ui.navigation.localMainViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Search(
@@ -88,7 +93,7 @@ fun Search(
                 modifier = Modifier.padding(padding).fillMaxSize(),
                 contentAlignment = Alignment.Center
             ){
-                Text(text = "No hay resultados")
+                Text(text = stringResource(R.string.no_hay_resultados))
 
             }
 

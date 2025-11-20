@@ -17,7 +17,6 @@ val PlaceFormDataSaver = mapSaver(
             mapOf(
                 "day" to daySchedule.day,
                 "isOpen" to daySchedule.isOpen,
-                // daySchedule.openTime y closeTime ya son Strings, no se necesita .toString()
                 "openTime" to daySchedule.openTime,
                 "closeTime" to daySchedule.closeTime
             )
@@ -41,7 +40,6 @@ val PlaceFormDataSaver = mapSaver(
             Schedule(
                 day = scheduleMap["day"] as String,
                 isOpen = scheduleMap["isOpen"] as Boolean,
-                // Leemos directamente los Strings. No se necesita parsear a LocalTime.
                 openTime = scheduleMap["openTime"] as? String,
                 closeTime = scheduleMap["closeTime"] as? String
             )
@@ -68,7 +66,6 @@ val PlaceFormDataSaver = mapSaver(
 
 
 
-// Modelo para agrupar todos los datos del formulario
 data class PlaceFormData(
     val name: String = "",
     val description: String = "",
@@ -79,5 +76,5 @@ data class PlaceFormData(
     val city: City? = null,
     val address: String = "",
     val images: List<String> = emptyList(),
-    val schedule: List<Schedule> = emptyList(), // Podrías crear un modelo para los horarios
+    val schedule: List<Schedule> = emptyList(),
 )

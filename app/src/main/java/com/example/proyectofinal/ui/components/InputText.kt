@@ -58,8 +58,8 @@ fun InputText(
                     {
                     Icon(
                         imageVector = icon,
-                        contentDescription = null, // Puedes pasar una descripción para accesibilidad
-                        tint = Primary // Opcional: colorea el icono
+                        contentDescription = null,
+                        tint = Primary
                     )
                 }
                     }else{

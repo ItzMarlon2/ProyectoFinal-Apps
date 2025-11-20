@@ -22,8 +22,7 @@ class ReviewsViewModel : ViewModel() {
             try {
                 _reviews.value = getReviewsByPlaceIdFirebase(placeId)
             } catch (e: Exception) {
-                println("Error getting reviews: ${e.message}")
-                _reviews.value = emptyList() // En caso de error, retornar una lista vacía
+                _reviews.value = emptyList()
             }
         }
     }
@@ -31,13 +30,13 @@ class ReviewsViewModel : ViewModel() {
     private suspend fun getReviewsByPlaceIdFirebase(placeId: String): List<Review> {
         val snapshot = db.collection("reviews")
             .whereEqualTo("placeId", placeId)
-            .orderBy("date", Query.Direction.DESCENDING) // Ordenar por fecha descendente
+            .orderBy("date", Query.Direction.DESCENDING)
             .get()
             .await()
 
         return snapshot.documents.mapNotNull { document ->
             document.toObject(Review::class.java)?.apply {
-                this.id = document.id // Asigna el ID del documento de Firebase
+                this.id = document.id
             }
         }
     }
@@ -45,21 +44,18 @@ class ReviewsViewModel : ViewModel() {
     fun createReview(review: Review, onComplete: (Review) -> Unit) {
         viewModelScope.launch {
             try {
-                // El campo 'date' se llenará automáticamente por @ServerTimestamp
                 val documentReference = db.collection("reviews").add(review).await()
 
-                // Obtenemos el review recién creado para tener el timestamp del servidor
                 val newReviewSnapshot = documentReference.get().await()
                 val createdReview = newReviewSnapshot.toObject(Review::class.java)?.apply {
                     id = newReviewSnapshot.id
                 }
 
                 if (createdReview != null) {
-                    onComplete(createdReview) // Devolvemos el review completo con la fecha
+                    onComplete(createdReview)
                 }
 
             } catch (e: Exception) {
-                println("Error creating review: ${e.message}")
             }
         }
     }

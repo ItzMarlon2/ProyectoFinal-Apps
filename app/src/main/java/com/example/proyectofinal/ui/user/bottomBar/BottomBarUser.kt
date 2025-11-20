@@ -53,8 +53,8 @@ fun BottomBarUser(navController: NavHostController, onNavigateToCreate: () -> Un
                 val strokeWidth = 1.dp.toPx()
                 drawLine(
                     color = Color.LightGray,
-                    start = Offset(0f, 0f), // Comienza en la esquina superior izquierda (x=0, y=0)
-                    end = Offset(size.width, 0f), // Termina en la esquina superior derecha (x=ancho, y=0)
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
                     strokeWidth = strokeWidth
                 )
             },
@@ -66,21 +66,18 @@ fun BottomBarUser(navController: NavHostController, onNavigateToCreate: () -> Un
             if (destination == Destination.CREATE) {
                 Box(
                     modifier = Modifier
-                        // El weight es importante para que ocupe el mismo espacio que los otros items
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
                         modifier = Modifier
-                            // Hacemos que la columna entera sea clickeable
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
                                 onClick = { onNavigateToCreate() }
                             ),
-                        horizontalAlignment = Alignment.CenterHorizontally // Centra el ícono y el texto
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Caja para el círculo
                         Box(
                             modifier = Modifier
                                 .size(56.dp)
@@ -94,12 +91,11 @@ fun BottomBarUser(navController: NavHostController, onNavigateToCreate: () -> Un
                                 tint = Color.White
                             )
                         }
-                        // 3. AÑADE EL TEXTO (LABEL) DEBAJO DEL CÍRCULO
                         Text(
                             text = stringResource(id = destination.label),
-                            color = if (isSelected) Primary else Color.Gray, // El mismo color que los otros labels seleccionados
-                            fontWeight = FontWeight.Bold, // Opcional: para que destaque
-                            fontSize = 12.sp // Opcional: ajusta el tamaño
+                            color = if (isSelected) Primary else Color.Gray,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp
                         )
                     }
                 }

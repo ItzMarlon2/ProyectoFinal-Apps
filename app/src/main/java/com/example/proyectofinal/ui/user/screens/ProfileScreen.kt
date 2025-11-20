@@ -44,9 +44,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.proyectofinal.R
 import com.example.proyectofinal.model.User
 import com.example.proyectofinal.ui.components.myPlacesList
 import com.example.proyectofinal.ui.navigation.localMainViewModel
@@ -136,7 +138,7 @@ fun Profile(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Tus lugares", style = MaterialTheme.typography.titleLarge)
+                            Text(stringResource(R.string.tus_lugares), style = MaterialTheme.typography.titleLarge)
                             Button(
                                 onClick = { onNavigateToCreatePlace() },
                                 colors = ButtonDefaults.buttonColors(Primary),
@@ -145,7 +147,7 @@ fun Profile(
                                     .height(40.dp)
                             ) {
                                 Text(
-                                    "Crear Lugar",
+                                    stringResource(R.string.crear_lugar),
                                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold)
                                 )
                             }
@@ -162,7 +164,7 @@ fun Profile(
                             modifier = Modifier.padding(vertical = 100.dp)
                         ) {
                             Text(
-                                "Aun no tienes lugares creados",
+                                stringResource(R.string.aun_no_tienes_lugares),
                                 style = MaterialTheme.typography.titleLarge
                             )
                             Icon(
@@ -252,7 +254,7 @@ fun ContainerUserInfo( user: User){
                 contentAlignment = Alignment.Center
             ){
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {  },
                     colors = ButtonDefaults.buttonColors(BackgroundPrimaryColor, Color.Black),
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.fillMaxWidth()
@@ -261,7 +263,7 @@ fun ContainerUserInfo( user: User){
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ){
-                        Icon(imageVector = Icons.Outlined.ModeEdit, contentDescription = "edit")
+                        Icon(imageVector = Icons.Outlined.ModeEdit, contentDescription = null)
                     }
                 }
             }
@@ -292,8 +294,8 @@ fun ContainerOtherAccess(logout: () -> Unit, onNavigateToLogin: () -> Unit){
                 verticalAlignment = Alignment.CenterVertically,
 
             ){
-                Icon(imageVector = Icons.Outlined.Logout, contentDescription = "Logout")
-                Text(text = "Cerrar sesión", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium, color = Color.Red)
+                Icon(imageVector = Icons.Outlined.Logout, contentDescription = null)
+                Text(text = stringResource(R.string.cerrar_sesion), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium, color = Color.Red)
             }
         }
     }

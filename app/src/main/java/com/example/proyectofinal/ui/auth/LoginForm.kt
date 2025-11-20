@@ -204,7 +204,7 @@ fun LoginForm(
                                 text = stringResource(R.string.login_text_forgot_password),
                                 color = Primary,
                                 style = MaterialTheme.typography.bodyLarge.copy(
-                                    textDecoration = TextDecoration.Underline // Subrayado para que parezca un enlace
+                                    textDecoration = TextDecoration.Underline
                                 ),
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -227,7 +227,7 @@ fun LoginForm(
                                     text = stringResource(R.string.login_text_signuphere_navigate),
                                     color = Primary,
                                     style = MaterialTheme.typography.bodyLarge.copy(
-                                        textDecoration = TextDecoration.Underline // Subrayado para que parezca un enlace
+                                        textDecoration = TextDecoration.Underline
                                     ),
                                     modifier = Modifier
                                         .padding(horizontal = 5.dp)
@@ -253,8 +253,8 @@ fun IconInContainer() {
         modifier = Modifier
             .size(120.dp)
             .shadow(
-                elevation = 8.dp, // Elige la elevación que prefieras
-                shape = RoundedCornerShape(borderRadius) // Usa la misma forma que el contenedor
+                elevation = 8.dp,
+                shape = RoundedCornerShape(borderRadius)
             )
             .background(
                 brush = Brush.verticalGradient(

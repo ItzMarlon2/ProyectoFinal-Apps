@@ -44,6 +44,93 @@
     <string name="menu_favorites">Favoritos</string>
     <string name="menu_profile">Perfil</string>
 
-    <string name="btn_ver">Ver lugar</string>
+    <string name="recuperar_contraseña">Recuperar Contraseña</string>
+    <string name="volver">Volver</string>
+    <string name="introduce_correo">Introduce tu correo electrónico</string>
+    <string name="te_enviaremos_un_enlace">Te enviaremos un enlace para que puedas restablecer tu contraseña.</string>
+    <string name="enviar_enlace">Enviar enlace</string>
+    <string name="reseñas">reseñas</string>
+    <string name="abierto">Abierto</string>
+    <string name="cerrado">Cerrado</string>
+    <string name="btn_ver">Ver Lugar</string>
+    <string name="no_se_encontraron_lugares">No se encontraron lugares. ¡Intenta recargar la lista!</string>
+    <string name="creado">creado:</string>
+    <string name="agregado_el">Agregado el:</string>
+    <string name="ver_mas">Ver más</string>
+    <string name="crear_lugar">Crear Lugar</string>
+    <string name="anterior">Anterior</string>
+    <string name="siguiente">Siguiente</string>
+    <string name="esta_seguro">Está seguro de salir?</string>
+    <string name="si_sale_perdera">Si sale perderá los cambios</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="cerrar">Cerrar</string>
+    <string name="info_basica">Información Básica</string>
+
+    <!-- Nombre del Lugar -->
+    <string name="form_label_place_name">Nombre del lugar *</string>
+    <string name="form_placeholder_place_name">Ej: Café Central</string>
+    <string name="form_error_field_cannot_be_empty">El campo no puede estar vacío</string>
+
+    <!-- Categoría -->
+    <string name="form_label_category">Categoría *</string>
+    <string name="form_placeholder_select_category">Selecciona una categoría</string>
+
+    <!-- Descripción -->
+    <string name="form_label_description">Descripción *</string>
+    <string name="form_placeholder_description">Describe tu lugar, qué lo hace especial</string>
+    <string name="form_error_field_is_required">Este campo es obligatorio</string>
+
+    <!-- Dirección -->
+    <string name="form_label_address">Dirección *</string>
+    <string name="form_placeholder_address">Dirección completa</string>
+
+    <!-- Ciudad -->
+    <string name="form_label_city">Ciudad *</string>
+    <string name="form_placeholder_select_city">Selecciona una ciudad</string>
+
+    <string name="info_contacto">Información de contacto</string>
+
+    <!-- Contacto -->
+    <string name="form_label_contact_info">Información de contacto</string>
+    <string name="form_label_phone">Teléfono</string>
+    <string name="form_placeholder_phone">+57 300 000 0000</string>
+    <string name="form_error_invalid_phone">Número de teléfono inválido</string>
+
+    <string name="form_label_website">Sitio web</string>
+    <string name="form_placeholder_website">www.ejemplo.com</string>
+    <string name="form_error_invalid_url">URL inválida</string>
+
+    <!-- Horarios de atención -->
+    <string name="form_label_schedule">Horarios de atención</string>
+
+    <string name="imagenes">Imágenes</string>
+    <string name="agrega_fotos">Agrega fotos de tu lugar para mostrar a los visitantes como ve</string>
+    <string name="agregar">Agregar</string>
+    <string name="ubicacion_en_el_mapa">Ubicación en el mapa</string>
+    <string name="elige_la_ubicacion">Elige la ubicación de tu sitio en el mapa</string>
+    <string name="imagen_subida">Imagen subida</string>
+    <string name="eliminar_imagen">Eliminar imagen</string>
+    <string name="direccion">Dirección</string>
+    <string name="horario">Horario</string>
+    <string name="no_disponible">No disponible</string>
+    <string name="usuario_anonimo">Usuario Anónimo</string>
+    <string name="deja_reseña">Deja tu reseña</string>
+    <string name="tu_calificacion">Tu calificación</string>
+    <string name="publicar_reseña">Publicar Reseña</string>
+    <string name="aun_no_hay_reseña">Aún no hay reseñas. ¡Sé el primero!</string>
+    <string name="lugar_no_encontrado">Lugar no encontrado</string>
+    <string name="enviar_reseña">Enviar Reseña</string>
+    <string name="rating">Rating</string>
+    <string name="lugares_cerca">Lugares cerca de tí</string>
+    <string name="lugares">Lugares</string>
+    <string name="tus_lugares">Tus lugares</string>
+    <string name="aun_no_tienes_lugares">Aun no tienes lugares creados</string>
+    <string name="cerrar_sesion">Cerrar Sesión</string>
+    <string name="no_hay_resultados">No hay resultados</string>
+    <string name="lugar_creado_ex">Lugar creado correctamente</string>
+
+
+
+
 
 </resources>

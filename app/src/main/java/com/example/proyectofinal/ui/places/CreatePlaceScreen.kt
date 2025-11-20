@@ -134,7 +134,7 @@ fun CreatePlaceScreen(userId: String?, onNavigateBack: () -> Unit){
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = "Crear Lugar")
+                    Text(text = stringResource(R.string.crear_lugar))
                 },
                 navigationIcon = {
                     IconButton(
@@ -216,7 +216,7 @@ fun CreatePlaceScreen(userId: String?, onNavigateBack: () -> Unit){
                         colors = ButtonDefaults.buttonColors(Color.Transparent, Color.Black)
 
                         ) {
-                        Text(text = "Anterior")
+                        Text(text = stringResource(R.string.anterior))
                     }
                 }else{
                 }
@@ -252,7 +252,6 @@ fun CreatePlaceScreen(userId: String?, onNavigateBack: () -> Unit){
                                 Modifier.weight(.5f)
 
                             } else {
-                                // Si es la primera pestaña, usamos el ancho fijo.
                                 Modifier.fillMaxWidth()
 
                             }
@@ -269,7 +268,7 @@ fun CreatePlaceScreen(userId: String?, onNavigateBack: () -> Unit){
 
 
                 ) {
-                    Text(if (tabIndex < tabs.size - 1) "Siguiente" else "Crear lugar", style =MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold))
+                    Text(if (tabIndex < tabs.size - 1) stringResource(R.string.siguiente) else stringResource(R.string.crear_lugar), style =MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold))
                 }
 
             }
@@ -280,10 +279,10 @@ fun CreatePlaceScreen(userId: String?, onNavigateBack: () -> Unit){
     if(showExitDialog){
         AlertDialog(
             title = {
-                 Text(text="Está seguro de salir?")
+                 Text(text=stringResource(R.string.esta_seguro))
             },
             text = {
-                Text(text = "Si sale perderá los cambios")
+                Text(text = stringResource(R.string.si_sale_perdera))
             },
             onDismissRequest = {
                 showExitDialog = false
@@ -295,7 +294,7 @@ fun CreatePlaceScreen(userId: String?, onNavigateBack: () -> Unit){
                         onNavigateBack()
                     }
                 ) {
-                    Text(text = "Confirmar")
+                    Text(text = stringResource(R.string.confirmar))
                 }
             },
             dismissButton = {
@@ -304,7 +303,7 @@ fun CreatePlaceScreen(userId: String?, onNavigateBack: () -> Unit){
                         showExitDialog = false
                     }
                 ) {
-                    Text(text = "Cerrar")
+                    Text(text = stringResource(R.string.cerrar))
                 }
             }
         )
@@ -331,30 +330,30 @@ fun FormSectionInfo(
             .padding(25.dp)
             .fillMaxWidth()
     ) {
-        item {  Text("Información básica", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold))}
+        item {  Text(stringResource(R.string.info_basica), style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold))}
         item {
             Column (
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ){
+
                 InputText(
                     value = formData.name,
-                    setValue = {newName ->
+                    setValue = { newName ->
                         onFormChange(formData.copy(name = newName))
                     },
-                    text = "Nombre del lugar *",
-                    place = "Ej: Café central",
-                    textError = "El campo no puede estar vacío",
+                    text = stringResource(R.string.form_label_place_name),
+                    place = stringResource(R.string.form_placeholder_place_name),
+                    textError = stringResource(R.string.form_error_field_cannot_be_empty),
                     isError = isErrorNamePlace,
                     setError = setIsErrorNamePlace,
                     onValidate = {
                         formData.name.isBlank()
                     }
-
                 )
                 DropDownMenu(
                     items = categoryOptions,
-                    selectedItem = formData.category?.displayName ?: "Selecciona una categoría",
-                    text = "Categoría *",
+                    selectedItem = formData.category?.displayName ?: stringResource(R.string.form_placeholder_select_category),
+                    text = stringResource(R.string.form_label_category),
                     onItemSelected = { selectedName ->
                         val newCategory = PlaceType.entries.find { it.displayName == selectedName }
                         onFormChange(formData.copy(category = newCategory))
@@ -362,12 +361,12 @@ fun FormSectionInfo(
                 )
                 InputText(
                     value = formData.description,
-                    setValue = {newDescription ->
+                    setValue = { newDescription ->
                         onFormChange(formData.copy(description = newDescription))
                     },
-                    text = "Descripción *",
-                    place = "Describe tu lugar, que lo hace especial",
-                    textError = "Este campo es obligatorio",
+                    text = stringResource(R.string.form_label_description),
+                    place = stringResource(R.string.form_placeholder_description),
+                    textError = stringResource(R.string.form_error_field_is_required),
                     isError = isErrorDescription,
                     setError = setIsErrorDescription,
                     onValidate = {
@@ -377,12 +376,12 @@ fun FormSectionInfo(
                 )
                 InputText(
                     value = formData.address,
-                    setValue = {newAddress ->
+                    setValue = { newAddress ->
                         onFormChange(formData.copy(address = newAddress))
                     },
-                    text = "Dirección *",
-                    place = "Dirección Completa",
-                    textError = "Este campo es obligatorio",
+                    text = stringResource(R.string.form_label_address),
+                    place = stringResource(R.string.form_placeholder_address),
+                    textError = stringResource(R.string.form_error_field_is_required), // Reutilizando el string de error
                     isError = isErrorAddress,
                     setError = setIsErrorAddress,
                     onValidate = {
@@ -395,13 +394,13 @@ fun FormSectionInfo(
                     verticalArrangement = Arrangement.spacedBy(space = 15.dp),
                 ) {
                     Text(
-                        text="Ciudad *",
+                        text = stringResource(R.string.form_label_city),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
                     DropDownMenu(
-                        items = cityOptions,           // La lista de strings para las opciones
-                        selectedItem = formData.city?.displayName ?: "Selecciona una ciudad",
+                        items = cityOptions,
+                        selectedItem = formData.city?.displayName ?: stringResource(R.string.form_placeholder_select_city),
                         text = "",
                         onItemSelected = { city ->
                             val newCity = City.entries.find { it.displayName == city }
@@ -409,6 +408,7 @@ fun FormSectionInfo(
                         },
                     )
                 }
+
 
             }
         }
@@ -433,9 +433,8 @@ fun FormSectionLocation(
                 Schedule(
                     day = day,
                     isOpen = true,
-                    // CAMBIO: Proporciona las horas como String en formato "HH:mm"
-                    openTime = "09:00",  // Antes: LocalTime.of(9, 0)
-                    closeTime = "17:00" // Antes: LocalTime.of(17, 0)
+                    openTime = "09:00",
+                    closeTime = "17:00"
                 )
             }
             onFormChange(formData.copy(schedule = initialSchedule))
@@ -453,7 +452,7 @@ fun FormSectionLocation(
                     .padding(25.dp)
                     .fillMaxWidth()
             ) {
-                Text("Información de Contacto", style = MaterialTheme.typography.titleLarge)
+                Text(stringResource(R.string.info_contacto), style = MaterialTheme.typography.titleLarge)
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
@@ -462,32 +461,30 @@ fun FormSectionLocation(
                         setValue = {newPhone ->
                             onFormChange(formData.copy(phone = newPhone))
                         },
-                        text = "Teléfono",
-                        place = "+57 300 000 0000",
-                        textError = "Número de teléfno inválido",
+                        text = stringResource(R.string.form_label_phone),
+                        place = stringResource(R.string.form_placeholder_phone),
+                        textError = stringResource(R.string.form_error_invalid_phone),
                         isError = isErrorPhone,
                         setError = setIsErrorPhone,
                         onValidate = {
                             formData.phone.isBlank() || !Patterns.PHONE.matcher(formData.phone).matches()
                         },
                         icon = Icons.Outlined.Phone
-
                     )
                     InputText(
                         value = formData.website,
                         setValue = {newWebsite ->
                             onFormChange(formData.copy(website = newWebsite))
                         },
-                        text = "Sitio web",
-                        place = "www.ejemplo.com",
-                        textError = "url inválida",
+                        text = stringResource(R.string.form_label_website),
+                        place = stringResource(R.string.form_placeholder_website),
+                        textError = stringResource(R.string.form_error_invalid_url),
                         isError = isErrorUrl,
                         setError = setIsErrorUrl,
                         onValidate = {
                             formData.website.isBlank() || !Patterns.WEB_URL.matcher(formData.website).matches()
                         },
                         icon = Icons.Outlined.Public
-
                     )
 
                 }
@@ -508,7 +505,7 @@ fun FormSectionLocation(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(imageVector = Icons.Outlined.AccessTime, contentDescription = null, tint = Color.Black)
-                    Text("Horarios de atención", style = MaterialTheme.typography.titleLarge)
+                    Text(stringResource(R.string.form_label_schedule), style = MaterialTheme.typography.titleLarge)
                 }
 
                 Column(
@@ -582,8 +579,8 @@ fun FormSectionPhotos(
         verticalArrangement = Arrangement.spacedBy(10.dp),
 
     ) {
-        Text("Imágenes", style = MaterialTheme.typography.titleLarge)
-        Text("Agrega fotos de tu lugar para mostrar a los visitantes como ve", color = Color.Gray)
+        Text(stringResource(R.string.imagenes), style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.agrega_fotos), color = Color.Gray)
 
         Column (
             verticalArrangement = Arrangement.spacedBy(30.dp),
@@ -623,19 +620,16 @@ fun FormSectionPhotos(
                     modifier = Modifier.background(Color.Transparent)
                 ) {
                     Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
-                    Text("Agregar", style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.agregar), style = MaterialTheme.typography.titleSmall)
                 }
             }
             val images = formData.images
             if (images.isNotEmpty()) {
-                // 2. REEMPLAZA LazyVerticalGrid POR FlowRow
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
-                    // Espaciado horizontal y vertical entre las imágenes
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // El 'items' se reemplaza por un bucle 'forEach'
                     images.forEach { imageUrl ->
                         ImagePreviewItem(
                             imageUrl = imageUrl,
@@ -662,8 +656,8 @@ fun FormSectionMap(
         verticalArrangement = Arrangement.spacedBy(10.dp),
 
         ) {
-        Text("Ubicación en el mapa", style = MaterialTheme.typography.titleLarge)
-        Text("Elige la ubicación de tu sitio en el mapa", color = Color.Gray)
+        Text(stringResource(R.string.ubicacion_en_el_mapa), style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.elige_la_ubicacion), color = Color.Gray)
 
         Column (
             verticalArrangement = Arrangement.spacedBy(30.dp),
@@ -696,7 +690,7 @@ fun ImagePreviewItem(
     ) {
         AsyncImage(
             model = imageUrl,
-            contentDescription = "Imagen subida",
+            contentDescription = stringResource(R.string.imagen_subida),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
@@ -715,7 +709,7 @@ fun ImagePreviewItem(
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
-                contentDescription = "Eliminar imagen",
+                contentDescription = stringResource(R.string.eliminar_imagen),
                 tint = Color.White,
                 modifier = Modifier.size(16.dp)
             )

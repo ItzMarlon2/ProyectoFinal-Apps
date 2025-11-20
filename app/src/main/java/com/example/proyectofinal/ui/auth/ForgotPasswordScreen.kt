@@ -13,10 +13,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.proyectofinal.R
 import com.example.proyectofinal.ui.navigation.localMainViewModel
 import com.example.proyectofinal.ui.theme.Primary
 import com.example.proyectofinal.utils.RequestResult
@@ -66,12 +68,12 @@ fun ForgotPasswordScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Recuperar Contraseña") },
+                title = { Text(stringResource(R.string.recuperar_contraseña)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver"
+                            contentDescription = stringResource(R.string.volver)
                         )
                     }
                 }
@@ -87,13 +89,13 @@ fun ForgotPasswordScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Introduce tu correo electrónico",
+                text = stringResource(R.string.introduce_correo),
                 style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Te enviaremos un enlace para que puedas restablecer tu contraseña.",
+                text = stringResource(R.string.te_enviaremos_un_enlace),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray,
                 textAlign = TextAlign.Center
@@ -103,7 +105,7 @@ fun ForgotPasswordScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Correo electrónico") },
+                label = { Text(stringResource(R.string.login_label_email)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth(),
@@ -136,7 +138,7 @@ fun ForgotPasswordScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Enviar Enlace", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.enviar_enlace), fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -148,7 +150,7 @@ fun ForgotPasswordScreen(
                 is RequestResult.Failure -> {
                     Text(result.errorMessage, color = MaterialTheme.colorScheme.error)
                 }
-                else -> { /* No mostrar nada */ }
+                else -> { }
             }
         }
     }

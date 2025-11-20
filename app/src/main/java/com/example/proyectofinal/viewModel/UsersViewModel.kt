@@ -27,7 +27,6 @@ class UsersViewModel: ViewModel() {
 
     init{
         auth.currentUser?.let { firebaseUser ->
-            // Si hay una sesión, busca sus datos en Firestore
             fetchCurrentUserData(firebaseUser.uid)
         }
     }
@@ -69,9 +68,7 @@ class UsersViewModel: ViewModel() {
                     this.id = snapshot.id
                 }
                 _currentUser.value = user
-                println("ViewModel: Usuario cargado -> $user")
             } catch (e: Exception) {
-                println("ViewModel: Error al cargar usuario -> ${e.message}")
 
                 logOut()
             }
@@ -124,27 +121,6 @@ class UsersViewModel: ViewModel() {
         _userResult.value = null
     }
 
-    fun loadUsers(){
-        /*_users.value = listOf(
-            User(
-                id = "1",
-                nombre = "marlon",
-                username = "itzMarlon13",
-                role = Role.ADMIN,
-                email = "marlonamorteguicampo@gmail.com",
-                password = "12345678",
-                city = "bogota"
-            ),
-            User(
-                id = "2",
-                nombre = "test",
-                username = "test123",
-                role = Role.USER,
-                email = "test@gmail.com",
-                password = "12345678",
-                city = "bogota"
-            )
-        )*/
-    }
+
 
 }

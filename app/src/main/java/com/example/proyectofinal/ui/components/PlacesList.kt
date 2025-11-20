@@ -91,7 +91,7 @@ fun PlacesList(
             if (places.isEmpty() && !isRefreshing) {
                 item {
                     Text(
-                        text = "No se encontraron lugares. ¡Intenta recargar la lista!",
+                        text = stringResource(R.string.no_se_encontraron_lugares),
                         modifier = Modifier
                             .fillParentMaxWidth()
                             .padding(top = 100.dp),
@@ -102,7 +102,6 @@ fun PlacesList(
 
 
             items(places){
-                println("info que llega: "+it)
 
                 Column(
                     modifier = Modifier
@@ -138,15 +137,15 @@ fun PlacesList(
                             val todaySchedule = it.schedules.find { it.day == todayName }
 
                             val (statusText, statusColor) = if (todaySchedule?.isOpen == true) {
-                                "Abierto" to Color(0xFF388E3C)
+                                stringResource(R.string.abierto) to Color(0xFF388E3C)
                             } else {
-                                "Cerrado" to Color(0xFFD32F2F)
+                                stringResource(R.string.cerrado) to Color(0xFFD32F2F)
                             }
 
                             Text(
                                 text = statusText,
                                 modifier = Modifier
-                                    .align(Alignment.BottomStart) // Posiciona el texto arriba a la derecha
+                                    .align(Alignment.BottomStart)
                                     .padding(8.dp)
                                     .background(
                                         statusColor.copy(alpha = 0.8f),
@@ -202,10 +201,10 @@ fun PlacesList(
 
                                 val totalReviews = it.reviews.size
                                 val averageRating = if (totalReviews > 0) {
-                                    // Suma todos los ratings y los divide por el total de reseñas
+
                                     it.reviews.sumOf { it.rating } / totalReviews.toDouble()
                                 } else {
-                                    0.0 // Si no hay reseñas, el promedio es 0.0
+                                    0.0
                                 }
 
                                 if (totalReviews > 0) {
@@ -215,13 +214,12 @@ fun PlacesList(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Icon(
-                                            imageVector = Icons.Filled.Star, // Usamos la estrella rellena
-                                            contentDescription = "Rating",
-                                            tint = Color(0xFFFFC107), // Un color amarillo/dorado típico para estrellas
-                                            modifier = Modifier.size(18.dp) // Ajusta el tamaño del ícono
+                                            imageVector = Icons.Filled.Star,
+                                            contentDescription = null,
+                                            tint = Color(0xFFFFC107),
+                                            modifier = Modifier.size(18.dp)
                                         )
 
-                                        // Muestra el promedio formateado a un solo decimal
                                         Text(
                                             text = String.format("%.1f", averageRating),
                                             fontWeight = FontWeight.Bold,
@@ -229,7 +227,6 @@ fun PlacesList(
                                             color = Color.Black
                                         )
 
-                                        // Muestra la cantidad total de reseñas entre paréntesis
                                         Text(
                                             text = "($totalReviews)",
                                             color = Color.Gray,
@@ -271,7 +268,6 @@ fun PlacesList(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // 2. Buscar el horario del día actual en la lista de schedules
                                 val todaySchedule = it.schedules.find { it.day == todayName }
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
@@ -296,15 +292,12 @@ fun PlacesList(
 
                             ){
                                 if (it.creationDate != null) {
-                                    println("creado: "+ it.creationDate)
-                                    // 1. Convierte el Timestamp a un objeto Date de Java
+                                    println("${stringResource(R.string.creado)} "+ it.creationDate)
                                     val dateObject = it.creationDate.toDate()
 
-                                    // 2. Define el formato que QUIERES (ej. "dd/MM/yyyy")
                                     val formatter = SimpleDateFormat("dd 'de' MMM, yyyy", Locale("es", "ES"))
 
-                                    // 3. Formatea el objeto Date a un String con ese formato
-                                    val formattedDate = formatter.format(dateObject) // Esto dará "18/11/2025"
+                                    val formattedDate = formatter.format(dateObject)
 
                                     Row(
                                         modifier = Modifier.padding(top = 8.dp),
@@ -312,7 +305,7 @@ fun PlacesList(
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
                                         Text(
-                                            text = "Agregado el:",
+                                            text = stringResource(R.string.agregado_el),
                                             color = Color.Gray,
                                             fontSize = 16.sp
                                         )
@@ -331,31 +324,6 @@ fun PlacesList(
                         }
                     },
                 )
-//            ListItem(
-//                modifier = Modifier
-//                    .clip(MaterialTheme.shapes.large)
-//                    .clickable{
-//
-//                    },
-//                headlineContent = { Text(it.title) },
-//                supportingContent = { Text(it.description) },
-//                leadingContent = {
-//                    AsyncImage(
-//                    modifier = Modifier
-//                        .width(120.dp)
-//                        .height(120.dp)
-//                        .clip(RoundedCornerShape(
-//                            topStart = 16.dp,
-//                            topEnd = 16.dp,
-//                            bottomStart = 0.dp,
-//                            bottomEnd = 0.dp
-//                        ))
-//                        ,
-//                    model = it.images[0],
-//                    contentDescription = it.title,
-//                    contentScale = ContentScale.Crop
-//                )},
-//            )
 
             }
         }
@@ -389,9 +357,9 @@ fun ExpandableText(
 
         if (isOverflowing && !isExpanded) {
             Text(
-                text = "Ver más",
+                text = stringResource(R.string.ver_mas),
                 style = MaterialTheme.typography.bodyLarge,
-                color = Primary, // Usa el color primario de tu tema
+                color = Primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .clickable { isExpanded = true }

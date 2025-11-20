@@ -8,22 +8,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.proyectofinal.R
 
-// Set of Material typography styles to start with
-// Define la FontFamily para Inter
 val InterFontFamily = FontFamily(
     Font(R.font.inter_variablefont_opsz, FontWeight.Normal),
     Font(R.font.inter_variablefont_opsz, FontWeight.Medium),
     Font(R.font.inter_variablefont_opsz, FontWeight.SemiBold),
     Font(R.font.inter_variablefont_opsz, FontWeight.Bold)
-    // Agrega aquí otros pesos y estilos de Inter que hayas descargado
-    // Ejemplo: Font(R.font.inter_light, FontWeight.Light),
-    //         Font(R.font.inter_black, FontWeight.Black),
-    //         Font(R.font.inter_italic, FontWeight.Normal, FontStyle.Italic)
-)
+    )
 val Typography = Typography(
     displayLarge = TextStyle(
         fontFamily = InterFontFamily,
-        fontWeight = FontWeight.Bold, // o el peso que desees para este estilo
+        fontWeight = FontWeight.Bold,
         fontSize = 57.sp,
         lineHeight = 64.sp,
         letterSpacing = (-0.25).sp
@@ -65,7 +59,7 @@ val Typography = Typography(
     ),
     titleLarge = TextStyle(
         fontFamily = InterFontFamily,
-        fontWeight = FontWeight.ExtraBold, // o FontWeight.Medium / FontWeight.Bold si prefieres
+        fontWeight = FontWeight.ExtraBold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp

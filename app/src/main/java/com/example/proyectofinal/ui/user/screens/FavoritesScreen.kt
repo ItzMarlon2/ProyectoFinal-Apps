@@ -15,6 +15,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.proyectofinal.R
 import com.example.proyectofinal.ui.components.PlacesList
 import com.example.proyectofinal.ui.navigation.localMainViewModel
 
@@ -40,9 +42,8 @@ fun Favorites(padding: PaddingValues, onNavigatePlaceDetail: (String) -> Unit, u
 
     Column(modifier = Modifier.padding(padding)) {
         if (favoritePlaces.isEmpty()) {
-            // Mensaje para cuando no hay favoritos
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Aún no tienes lugares favoritos.", style = MaterialTheme.typography.bodyLarge, color = Color.Gray)
+                Text(stringResource(R.string.aun_no_hay_reseña), style = MaterialTheme.typography.bodyLarge, color = Color.Gray)
             }
         } else {
             PlacesList(

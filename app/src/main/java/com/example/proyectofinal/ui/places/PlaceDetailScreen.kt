@@ -68,11 +68,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.proyectofinal.R
 import com.example.proyectofinal.model.Place
 import com.example.proyectofinal.model.Review
 import com.example.proyectofinal.ui.components.InfoPlace
@@ -103,7 +105,6 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showComments by remember { mutableStateOf(false) }
-    println("reviews"+ reviews)
 
     LaunchedEffect(placeId) {
         reviewsViewModel.getReviewsByPlaceId(placeId)
@@ -141,7 +142,7 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
 
                         Icon(
                             imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = "Marcar como favorito",
+                            contentDescription = null,
                             tint = if (isFavorite) Color.Red else Color.Gray,
                         )
                     }
@@ -263,12 +264,13 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
                                     .fillMaxWidth(),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ){
-                                InfoPlace(Icons.Outlined.LocationOn, place.address+" - "+place.city!!.displayName, "Dirección ", Color.Red)
+                                InfoPlace(Icons.Outlined.LocationOn, place.address+" - "+place.city!!.displayName,
+                                    stringResource(R.string.direccion), Color.Red)
                                 val todaySchedule = place.schedules.find { it.day == todayName }
 
-                                InfoPlace(Icons.Outlined.AccessTime, todaySchedule?.openTime+" - "+todaySchedule?.closeTime, "Horario", Color.Green)
-                                InfoPlace(Icons.Outlined.Call, place.phones.firstOrNull() ?: "No disponible", "Teléfono", Color.Yellow)
-                                InfoPlace(Icons.Outlined.BlurCircular, place.address, "Sitio web",
+                                InfoPlace(Icons.Outlined.AccessTime, todaySchedule?.openTime+" - "+todaySchedule?.closeTime, stringResource(R.string.horario), Color.Green)
+                                InfoPlace(Icons.Outlined.Call, place.phones.firstOrNull() ?: stringResource(R.string.no_disponible), stringResource(R.string.form_label_phone), Color.Yellow)
+                                InfoPlace(Icons.Outlined.BlurCircular, place.address, stringResource(R.string.form_label_website),
                                     Primary
                                 )
 
@@ -283,10 +285,10 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
                             ){
                                 var rating by remember { mutableStateOf(0) }
                                 var comment by remember { mutableStateOf("") }
-                                val userName = userName ?: "Usuario Anónimo"
+                                val userName = userName ?: stringResource(R.string.usuario_anonimo)
 
-                                Text(text = "Deja tu reseña", style = MaterialTheme.typography.titleLarge)
-                                Text(text = "Tu calificación", style = MaterialTheme.typography.bodyLarge)
+                                Text(text = stringResource(R.string.deja_reseña), style = MaterialTheme.typography.titleLarge)
+                                Text(text = stringResource(R.string.tu_calificacion), style = MaterialTheme.typography.bodyLarge)
                                 StarRatingInput(
                                     rating = rating,
                                     onRatingChange = { rating = it }
@@ -294,7 +296,7 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
                                 OutlinedTextField(
                                     value = comment,
                                     onValueChange = {comment = it},
-                                    label = { Text("Deja tu reseña") },
+                                    label = { Text(stringResource(R.string.deja_reseña)) },
                                     singleLine = false,
                                     minLines = 3,
                                     colors = OutlinedTextFieldDefaults.colors(
@@ -336,7 +338,7 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
                                         horizontalArrangement = Arrangement.spacedBy(15.dp),
                                         ) {
                                             Icon(imageVector = Icons.Outlined.Send, contentDescription = null, tint = Color.White)
-                                            Text(text = "Publicar reseña", style = MaterialTheme.typography.titleMedium)
+                                            Text(text = stringResource(R.string.publicar_reseña), style = MaterialTheme.typography.titleMedium)
                                         }
                                 }
 
@@ -358,7 +360,7 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
                     ) {
                         item {
                             Text(
-                                text = "Reseñas",
+                                text = stringResource(R.string.reseñas),
                                 style = MaterialTheme.typography.titleLarge,
                                 modifier = Modifier.padding(top = 16.dp)
                             )
@@ -372,7 +374,7 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
                                         .padding(vertical = 32.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text("Aún no hay reseñas. ¡Sé el primero!", color = Color.Gray)
+                                    Text(stringResource(R.string.aun_no_hay_reseña), color = Color.Gray)
                                 }
                             }
                         } else {
@@ -386,10 +388,9 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
                                 placeId = placeId,
                                 userId = userId,
                                 onCreateReview = { comment, rating ->
-                                    val userName = "Usuario Anónimo"
                                     val newReview = Review(
                                         userId = userId ?: "",
-                                        userName = userName,
+                                        userName = userName!!,
                                         placeId = place.id,
                                         rating = rating,
                                         comment = comment
@@ -410,7 +411,7 @@ fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateB
 
         } else {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Lugar no encontrado")
+                Text(stringResource(R.string.lugar_no_encontrado))
             }
         }
 
@@ -426,7 +427,7 @@ fun ReviewsLists(review: Review) {
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = review.rating.toString(), style = MaterialTheme.typography.bodyMedium)
-                Icon(Icons.Filled.Star, contentDescription = "Rating", tint = Color(0xFFFFC107))
+                Icon(Icons.Filled.Star, contentDescription = null, tint = Color(0xFFFFC107))
             }
         }
     )
@@ -441,13 +442,13 @@ fun CreateReview (
     onCreateReview: (String, Int) -> Unit
 ){
     var comment by remember { mutableStateOf("") }
-    var rating by remember { mutableStateOf(0) } // Estado para el rating
+    var rating by remember { mutableStateOf(0) }
     val isButtonEnabled = comment.isNotBlank() && rating > 0 && userId != null
 
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Tu calificación:", style = MaterialTheme.typography.bodyMedium)
+        Text("${stringResource(R.string.tu_calificacion)}:", style = MaterialTheme.typography.bodyMedium)
         StarRatingInput(
             rating = rating,
             onRatingChange = { rating = it }
@@ -460,7 +461,7 @@ fun CreateReview (
                 onValueChange = { comment = it },
                 modifier = Modifier.weight(1f),
                 placeholder = {
-                    Text(text = "Deja tu reseña")
+                    Text(text = stringResource(R.string.deja_reseña))
                 },
                 colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color.LightGray.copy(alpha = 0.2f),
@@ -482,7 +483,7 @@ fun CreateReview (
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Send,
-                    contentDescription = "Enviar reseña",
+                    contentDescription = stringResource(R.string.enviar_reseña),
                     tint = if (isButtonEnabled) Primary else Color.Gray
                 )
             }
@@ -545,7 +546,7 @@ fun StarRatingInput(
             IconButton(onClick = { onRatingChange(i) }) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = "Rating $i",
+                    contentDescription = "${stringResource(R.string.rating)} $i",
                     tint = color
                 )
             }
@@ -581,7 +582,7 @@ fun ExpandableText(
 
         if (isOverflowing && !isExpanded) {
             Text(
-                text = "Ver más",
+                text = stringResource(R.string.ver_mas),
                 style = MaterialTheme.typography.bodyLarge,
                 color = Primary,
                 fontWeight = FontWeight.Bold,

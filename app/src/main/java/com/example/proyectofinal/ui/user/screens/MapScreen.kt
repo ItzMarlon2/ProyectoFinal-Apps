@@ -23,7 +23,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.proyectofinal.R
 import com.example.proyectofinal.ui.components.Map
 import com.example.proyectofinal.ui.navigation.localMainViewModel
 import com.example.proyectofinal.ui.components.myPlacesList
@@ -72,9 +74,9 @@ fun Map(padding: PaddingValues, onNavigatePlaceDetail: (String) -> Unit){
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Lugares cerca de ti", style = MaterialTheme.typography.titleLarge)
+                    Text(text = stringResource(R.string.lugares_cerca), style = MaterialTheme.typography.titleLarge)
                     Text(
-                        text = "${places.size} lugares",
+                        text = "${places.size} ${stringResource(R.string.lugares)}",
                         style = MaterialTheme.typography.labelLarge,
                         color = Color.Gray
                     )
