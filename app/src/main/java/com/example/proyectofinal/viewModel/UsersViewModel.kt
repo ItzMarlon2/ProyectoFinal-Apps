@@ -26,7 +26,10 @@ class UsersViewModel: ViewModel() {
 
 
     init{
-        loadUsers()
+        auth.currentUser?.let { firebaseUser ->
+            // Si hay una sesión, busca sus datos en Firestore
+            fetchCurrentUserData(firebaseUser.uid)
+        }
     }
 
     fun create(user: User){
@@ -58,14 +61,21 @@ class UsersViewModel: ViewModel() {
             .await()
     }
 
-    private suspend fun findByIdFirebase(id: String){
-       val snapshot =  db.collection("users").document(id).get().await()
+    private fun fetchCurrentUserData(userId: String){
+        viewModelScope.launch {
+            try {
+                val snapshot = db.collection("users").document(userId).get().await()
+                val user = snapshot.toObject(User::class.java)?.apply {
+                    this.id = snapshot.id
+                }
+                _currentUser.value = user
+                println("ViewModel: Usuario cargado -> $user")
+            } catch (e: Exception) {
+                println("ViewModel: Error al cargar usuario -> ${e.message}")
 
-        val user = snapshot.toObject(User::class.java)?.apply {
-            this.id = snapshot.id
+                logOut()
+            }
         }
-
-        _currentUser.value = user
     }
 
     fun login(email: String, password: String){
@@ -89,7 +99,25 @@ class UsersViewModel: ViewModel() {
     private suspend fun loginFirebase(email: String, password: String){
         val responseUser = auth.signInWithEmailAndPassword(email, password).await()
         val uId = responseUser.user?.uid ?: throw Exception("Usuario no encontrado")
-        findByIdFirebase(uId)
+
+        fetchCurrentUserData(uId)
+    }
+
+    fun sendPasswordResetEmail(email: String) {
+        viewModelScope.launch {
+            _userResult.value = RequestResult.Loading
+            if (email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                _userResult.value = RequestResult.Failure("Por favor, introduce un correo electrónico válido.")
+                return@launch
+            }
+
+            try {
+                auth.sendPasswordResetEmail(email).await()
+                _userResult.value = RequestResult.Success("Se ha enviado un enlace de recuperación a tu correo.")
+            } catch (e: Exception) {
+                _userResult.value = RequestResult.Failure(e.message ?: "Error al enviar el correo de recuperación.")
+            }
+        }
     }
 
     fun resetOperationResult(){

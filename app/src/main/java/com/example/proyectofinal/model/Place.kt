@@ -17,6 +17,7 @@ data class Place(
     val ownerId: String= "",
     val city: City? = City.POR_DEFECTO,
     val website: String= "",
+    val favoritedBy: List<String> = listOf(),
     @get:Exclude var reviews: List<Review> = emptyList(),
     @ServerTimestamp
     val creationDate: Timestamp? = null,

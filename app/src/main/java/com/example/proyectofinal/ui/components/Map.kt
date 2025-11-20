@@ -5,7 +5,20 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -14,9 +27,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import coil.compose.rememberAsyncImagePainter
 import com.example.proyectofinal.R
 import com.example.proyectofinal.model.Place
 import com.mapbox.geojson.Point
@@ -37,7 +56,7 @@ fun Map(
     places: List<Place> = emptyList(),
     activateClick: Boolean = false,
     onMapClickListener: (Point) -> Unit = {},
-
+    onNavigatePlaceDetail: (String) -> Unit = {}
 ){
     val context = LocalContext.current
     var clickedPoint by rememberSaveable { mutableStateOf<Point?>(null) }
@@ -99,7 +118,10 @@ fun Map(
                     point = Point.fromLngLat(place.location.lng, place.location.lat),
                 ){
                     iconImage = marker
-
+                    interactionsState.onClicked {
+                        onNavigatePlaceDetail(place.id)
+                        true
+                    }
                 }
             }
         }
@@ -138,4 +160,45 @@ fun rememberLocationPermissionState(
     return permissionGranted.value
 
 
+}
+
+@Composable
+fun PlaceInfoCard(place: Place, onNavigate: () -> Unit) {
+    Card (
+        modifier = Modifier
+            .width(220.dp) // Ancho fijo para la tarjeta
+            .clickable { onNavigate() }, // Hacer toda la tarjeta clicable
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column {
+            Image(
+                painter = rememberAsyncImagePainter(place.images.firstOrNull()),
+                contentDescription = place.title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Column(
+                modifier = Modifier.padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = place.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
+                )
+                Text(
+                    text = place.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray,
+                    maxLines = 2
+                )
+            }
+        }
+    }
 }

@@ -61,7 +61,7 @@ import com.example.proyectofinal.viewModel.UsersViewModel
 fun LoginForm(
     onNavigateToRegister: () -> Unit = {},
     onNavigateToForgotPassword: () -> Unit = {},
-    onNavigateToHome: (String, Role) -> Unit,
+    onNavigateToHome: (String, Role, String) -> Unit,
 
     ){
     val (email, setEmail) = rememberSaveable { mutableStateOf("") }
@@ -193,7 +193,7 @@ fun LoginForm(
                             OperationResultHandler(
                                 result = userResult,
                                 onSuccess = {
-                                    onNavigateToHome(usersViewModel.currentUser.value!!.id, usersViewModel.currentUser.value!!.role)
+                                    onNavigateToHome(usersViewModel.currentUser.value!!.id, usersViewModel.currentUser.value!!.role, usersViewModel.currentUser.value!!.nombre)
                                     usersViewModel.resetOperationResult()
                                 },
                                 onFailure = {

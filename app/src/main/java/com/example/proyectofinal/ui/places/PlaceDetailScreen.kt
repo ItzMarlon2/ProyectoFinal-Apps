@@ -2,8 +2,10 @@ package com.example.proyectofinal.ui.places
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Comment
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -65,6 +68,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,17 +79,24 @@ import com.example.proyectofinal.ui.components.InfoPlace
 import com.example.proyectofinal.ui.navigation.localMainViewModel
 import com.example.proyectofinal.ui.theme.BorderBoxes
 import com.example.proyectofinal.ui.theme.Primary
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.Locale
 import java.util.UUID
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaceDetail (placeId: String, userId:String?, onNavigateBack: () -> Unit){
+fun PlaceDetail (placeId: String, userName: String?, userId:String?, onNavigateBack: () -> Unit){
     val placesViewModel = localMainViewModel.current.placesViewModel
     val reviewsViewModel = localMainViewModel.current.reviewsViewModel
-    val place = placesViewModel.findById(placeId)
+    val allPlaces by placesViewModel.places.collectAsState()
+
+    val place = remember(allPlaces, placeId) {
+        allPlaces.find { it.id == placeId }
+    }
+
     val reviews by reviewsViewModel.reviews.collectAsState()
 
     var value by remember { mutableStateOf("") }
@@ -97,6 +108,11 @@ fun PlaceDetail (placeId: String, userId:String?, onNavigateBack: () -> Unit){
     LaunchedEffect(placeId) {
         reviewsViewModel.getReviewsByPlaceId(placeId)
     }
+    val todayName = LocalDate.now().dayOfWeek.getDisplayName(
+        java.time.format.TextStyle.FULL,
+        Locale("es", "ES")
+    ).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+
 
     Scaffold(
         topBar = {
@@ -116,16 +132,17 @@ fun PlaceDetail (placeId: String, userId:String?, onNavigateBack: () -> Unit){
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = {
+                        if (place != null) {
+                            placesViewModel.toggleFavorite(placeId, userId ?: "")
+                        }
+                    }) {
+                        val isFavorite = place!!.favoritedBy.contains(userId)
+
                         Icon(
-                            imageVector = Icons.Outlined.Download,
-                            contentDescription = "Download"
-                        )
-                    }
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            imageVector = Icons.Outlined.FavoriteBorder,
-                            contentDescription = "Download"
+                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Marcar como favorito",
+                            tint = if (isFavorite) Color.Red else Color.Gray,
                         )
                     }
                 }
@@ -156,7 +173,35 @@ fun PlaceDetail (placeId: String, userId:String?, onNavigateBack: () -> Unit){
                             verticalArrangement = Arrangement.spacedBy(20.dp),
                             modifier = Modifier.padding(16.dp)
                         ){
-                            Text(text = place.title, style=MaterialTheme.typography.headlineMedium)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+
+                            ) {
+                                Text(text = place.title, style=MaterialTheme.typography.headlineMedium)
+                                val todaySchedule = place.schedules.find { it.day == todayName }
+
+                                val (statusText, statusColor) = if (todaySchedule?.isOpen == true) {
+                                    "Abierto" to Color(0xFF388E3C)
+                                } else {
+                                    "Cerrado" to Color(0xFFD32F2F)
+                                }
+
+                                Text(
+                                    text = statusText,
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .background(
+                                            statusColor.copy(alpha = 0.8f),
+                                            RoundedCornerShape(20.dp)
+                                        )
+                                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                                    color = Color.White,
+                                    fontWeight = FontWeight.ExtraBold
+
+                                )
+                            }
                             val totalReviews = place.reviews.size
                             val averageRating = if (totalReviews > 0) {
                                 place.reviews.sumOf { it.rating } / totalReviews.toDouble()
@@ -190,14 +235,26 @@ fun PlaceDetail (placeId: String, userId:String?, onNavigateBack: () -> Unit){
                                     )
 
                                     Text(
-                                        text = "($totalReviews) Reseñas",
+                                        text = "($totalReviews reseñas)",
                                         color = Color.Gray,
                                         fontSize = 17.sp
                                     )
                                 }
 
-                            Text(text = place.type!!.displayName, style=MaterialTheme.typography.labelMedium)
-                            Text(text = place.description, style = MaterialTheme.typography.bodyLarge, color = Color.Gray)
+                            Text(modifier = Modifier
+                                .padding(8.dp)
+                                .background(
+                                    Color.White,
+                                    RoundedCornerShape(20.dp)
+                                ),
+                                text = place.type!!.displayName,
+                                style=MaterialTheme.typography.labelMedium
+                            )
+                            ExpandableText(
+                                text = place.description,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Gray
+                            )
                             Column(
                                 modifier = Modifier
                                     .border(1.dp, BorderBoxes, RoundedCornerShape(8.dp))
@@ -206,19 +263,12 @@ fun PlaceDetail (placeId: String, userId:String?, onNavigateBack: () -> Unit){
                                     .fillMaxWidth(),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ){
-                                InfoPlace(Icons.Outlined.LocationOn, place.address+"-"+place.city!!.displayName, "Dirección ", Color.Red)
-                                val scheduleToDisplay = place.schedules.firstOrNull() // Tomamos el primer horario de forma segura
+                                InfoPlace(Icons.Outlined.LocationOn, place.address+" - "+place.city!!.displayName, "Dirección ", Color.Red)
+                                val todaySchedule = place.schedules.find { it.day == todayName }
 
-//                                val scheduleText = if (scheduleToDisplay != null) {
-//                                    // Si existe, lo formateamos: "Lunes: 8:00 AM - 10:00 PM"
-//                                    "${scheduleToDisplay.day}: ${scheduleToDisplay.open} - ${scheduleToDisplay.close}"
-//                                } else {
-//                                    // Si no hay horarios, mostramos un texto por defecto
-//                                    "Horario no disponible"
-//                                }
-//                                InfoPlace(Icons.Outlined.AccessTime, scheduleText, "Horario", Color.Green)
+                                InfoPlace(Icons.Outlined.AccessTime, todaySchedule?.openTime+" - "+todaySchedule?.closeTime, "Horario", Color.Green)
                                 InfoPlace(Icons.Outlined.Call, place.phones.firstOrNull() ?: "No disponible", "Teléfono", Color.Yellow)
-                                InfoPlace(Icons.Outlined.BlurCircular, "www.example.com", "Sitio web",
+                                InfoPlace(Icons.Outlined.BlurCircular, place.address, "Sitio web",
                                     Primary
                                 )
 
@@ -233,7 +283,7 @@ fun PlaceDetail (placeId: String, userId:String?, onNavigateBack: () -> Unit){
                             ){
                                 var rating by remember { mutableStateOf(0) }
                                 var comment by remember { mutableStateOf("") }
-                                val userName = "Usuario Anónimo"
+                                val userName = userName ?: "Usuario Anónimo"
 
                                 Text(text = "Deja tu reseña", style = MaterialTheme.typography.titleLarge)
                                 Text(text = "Tu calificación", style = MaterialTheme.typography.bodyLarge)
@@ -445,29 +495,39 @@ fun CreateReview (
 fun PlaceImageCarousel(place: Place) {
 
     val images = place.images
-
     if (images.isEmpty()) return
-
-    HorizontalMultiBrowseCarousel(
-        state = rememberCarouselState { images.count() },
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(top = 16.dp, bottom = 16.dp),
-        preferredItemWidth = 186.dp,
-        itemSpacing = 8.dp,
-        contentPadding = PaddingValues(horizontal = 16.dp)
-    ) { i ->
-        val imageUrl = images[i]
+    if(images.size == 1){
         AsyncImage(
-            model = imageUrl,
+            model = images[0],
             modifier = Modifier
-                .height(300.dp)
-                .maskClip(MaterialTheme.shapes.extraLarge),
+                .fillMaxWidth()
+                .height(300.dp),
             contentDescription = place.title,
             contentScale = ContentScale.Crop
         )
+    }else{
+        HorizontalMultiBrowseCarousel(
+            state = rememberCarouselState { images.count() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = 16.dp, bottom = 16.dp),
+            preferredItemWidth = 186.dp,
+            itemSpacing = 8.dp,
+            contentPadding = PaddingValues(horizontal = 16.dp)
+        ) { i ->
+            val imageUrl = images[i]
+            AsyncImage(
+                model = imageUrl,
+                modifier = Modifier
+                    .height(300.dp)
+                    .maskClip(MaterialTheme.shapes.extraLarge),
+                contentDescription = place.title,
+                contentScale = ContentScale.Crop
+            )
+        }
     }
+
 }
 
 @Composable
@@ -489,6 +549,46 @@ fun StarRatingInput(
                     tint = color
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun ExpandableText(
+    text: String,
+    style: TextStyle = MaterialTheme.typography.bodyLarge,
+    color: Color = Color.Gray,
+    maxLinesCollapsed: Int = 4
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    var isOverflowing by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.animateContentSize()
+    ) {
+        Text(
+            text = text,
+            style = style,
+            color = color,
+
+            maxLines = if (isExpanded) Int.MAX_VALUE else maxLinesCollapsed,
+
+            onTextLayout = { textLayoutResult ->
+                isOverflowing = textLayoutResult.hasVisualOverflow
+            }
+        )
+
+        if (isOverflowing && !isExpanded) {
+            Text(
+                text = "Ver más",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Primary,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .clickable { isExpanded = true }
+                    .padding(top = 4.dp)
+            )
         }
     }
 }

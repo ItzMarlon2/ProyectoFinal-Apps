@@ -1,5 +1,7 @@
 package com.example.proyectofinal.ui.user.nav
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import com.example.proyectofinal.ui.user.screens.Search
 import com.example.proyectofinal.utils.SharedPrefsUtil
 import com.example.proyectofinal.viewModel.PlacesViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ContentUser(
     userId: String,
@@ -40,7 +43,7 @@ fun ContentUser(
     ){
 
         composable<RouteTab.Map>{
-            Map(padding = padding)
+            Map(padding = padding, onNavigatePlaceDetail)
         }
         composable<RouteTab.Search>{
             Search(
@@ -49,7 +52,7 @@ fun ContentUser(
             )
         }
         composable<RouteTab.Favorites>{
-            Favorites(padding = padding,  onNavigatePlaceDetail = onNavigatePlaceDetail)
+            Favorites(padding = padding,  onNavigatePlaceDetail = onNavigatePlaceDetail, userId = userId)
         }
         composable<RouteTab.Profile>{
             Profile(

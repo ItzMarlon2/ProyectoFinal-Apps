@@ -1,5 +1,7 @@
 package com.example.proyectofinal.ui.user.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +34,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.proyectofinal.model.User
 import com.example.proyectofinal.ui.components.myPlacesList
 import com.example.proyectofinal.ui.navigation.localMainViewModel
 import com.example.proyectofinal.ui.theme.BackgroundPrimaryColor
@@ -51,6 +55,7 @@ import com.example.proyectofinal.ui.theme.BorderBoxes
 import com.example.proyectofinal.ui.theme.Primary
 import com.example.proyectofinal.ui.theme.PrimaryUltraLight
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Profile(
@@ -61,12 +66,18 @@ fun Profile(
     onNavigatePlaceDetail: (String) -> Unit,
     onNavigateToCreatePlace: () -> Unit
 ) {
-    val placesViewModel = localMainViewModel.current.placesViewModel
 
+    val placesViewModel = localMainViewModel.current.placesViewModel
+    val usersViewModel = localMainViewModel.current.usersViewModel
+    val currentUser by usersViewModel.currentUser.collectAsState()
     placesViewModel.getMyPlaces(userId)
     val myPlaces by placesViewModel.myPlaces.collectAsState()
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Resumen", "Mis lugares")
+    val isRefreshing by placesViewModel.isRefreshing.collectAsState()
+    LaunchedEffect(Unit) {
+        placesViewModel.getMyPlaces(userId)
+    }
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 15.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -111,7 +122,11 @@ fun Profile(
 
         when (tabIndex) {
             0 -> {
-                item { ContainerUserInfo() }
+                item {
+                    currentUser?.let { user ->
+                        ContainerUserInfo(user = user)
+                    }
+                }
             }
 
             1 -> {
@@ -162,7 +177,9 @@ fun Profile(
 
                 myPlacesList(
                     places = myPlaces,
-                    onNavigatePlaceDetail = onNavigatePlaceDetail
+                    onNavigatePlaceDetail = onNavigatePlaceDetail,
+                    isRefreshing = isRefreshing,
+                    onRefresh = { placesViewModel.getMyPlaces(currentUser!!.id) }
                 )
 
             }
@@ -174,10 +191,10 @@ fun Profile(
 
 
 @Composable
-fun ContainerUserInfo(){
+fun ContainerUserInfo( user: User){
     Column (
         modifier = Modifier
-            .border(1.dp, BorderBoxes, RoundedCornerShape(8.dp)).background(Color.White).padding(25.dp).fillMaxWidth().height(300.dp),
+            .border(1.dp, BorderBoxes, RoundedCornerShape(8.dp)).background(Color.White).padding(25.dp).fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
 
     ) {
@@ -201,7 +218,9 @@ fun ContainerUserInfo(){
                         contentAlignment = Alignment.Center
 
                     ){
-                        Text(text = "M", color = Color.White, fontSize = 20.sp)
+                        if (user.nombre.isNotEmpty()) {
+                            Text(text = user.nombre.first().uppercase(), color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.Bold)
+                        }
                     }
                     Box(
                         modifier = Modifier
@@ -218,11 +237,13 @@ fun ContainerUserInfo(){
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(text = "Marlon Campo", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                    Text(text="@ItzMarlon13", style = MaterialTheme.typography.labelLarge, color = Color.Gray)
-                    Row {
-                        Icon(imageVector = Icons.Outlined.LocationOn, contentDescription = "city", tint = Color.Gray, modifier = Modifier.size(16.dp))
-                        Text(text="Armenia", style = MaterialTheme.typography.labelLarge, color = Color.Gray)
+                    Text(text = user.nombre, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(text="@${user.username}", style = MaterialTheme.typography.labelLarge, color = Color.Gray)
+                    user.city?.let { city ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(imageVector = Icons.Outlined.LocationOn, contentDescription = "city", tint = Color.Gray, modifier = Modifier.size(16.dp))
+                            Text(text = city.displayName, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
+                        }
                     }
                 }
             }

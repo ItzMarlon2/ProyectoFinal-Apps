@@ -1,5 +1,7 @@
 package com.example.proyectofinal.ui.user
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -10,6 +12,7 @@ import com.example.proyectofinal.ui.navigation.RouteScreen
 import com.example.proyectofinal.ui.user.bottomBar.BottomBarUser
 import com.example.proyectofinal.ui.user.nav.ContentUser
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeUser(
     userId: String,

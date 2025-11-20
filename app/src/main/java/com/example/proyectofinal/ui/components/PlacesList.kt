@@ -2,6 +2,7 @@ package com.example.proyectofinal.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,6 +38,10 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -130,14 +135,12 @@ fun PlacesList(
                                 contentDescription = it.title,
                                 contentScale = ContentScale.Crop
                             )
-                            // 2. Buscar el horario del día actual en la lista de schedules
                             val todaySchedule = it.schedules.find { it.day == todayName }
 
-                            // 3. Determinar el texto y el color a mostrar
                             val (statusText, statusColor) = if (todaySchedule?.isOpen == true) {
-                                "Abierto" to Color(0xFF388E3C) // Verde oscuro
+                                "Abierto" to Color(0xFF388E3C)
                             } else {
-                                "Cerrado" to Color(0xFFD32F2F) // Rojo oscuro
+                                "Cerrado" to Color(0xFFD32F2F)
                             }
 
                             Text(
@@ -185,7 +188,11 @@ fun PlacesList(
                                     }
                                 )
                             }
-                            Text(it.description, color = Color.Gray, fontSize = 18.sp)
+                            ExpandableText(
+                                text = it.description,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Gray
+                            )
                             Row(
                                 modifier = Modifier.padding(top = 10.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -354,4 +361,42 @@ fun PlacesList(
         }
     }
 
+}
+
+@Composable
+fun ExpandableText(
+    text: String,
+    style: androidx.compose.ui.text.TextStyle =  MaterialTheme.typography.bodyLarge,
+    color: Color = Color.Gray,
+    maxLinesCollapsed: Int = 2
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    var isOverflowing by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.animateContentSize()
+    ) {
+        Text(
+            text = text,
+            style = style,
+            color = color,
+            maxLines = if (isExpanded) Int.MAX_VALUE else maxLinesCollapsed,
+            onTextLayout = { textLayoutResult ->
+                isOverflowing = textLayoutResult.hasVisualOverflow
+            }
+        )
+
+        if (isOverflowing && !isExpanded) {
+            Text(
+                text = "Ver más",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Primary, // Usa el color primario de tu tema
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .clickable { isExpanded = true }
+                    .padding(top = 4.dp)
+            )
+        }
+    }
 }

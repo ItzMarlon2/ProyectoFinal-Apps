@@ -59,6 +59,7 @@ import java.util.UUID
 @Composable
 fun RegisterScreen(
     onNavigateToLogin: () -> Unit,
+    onNavigateBack: () -> Unit
 ){
     val usersViewModel = localMainViewModel.current.usersViewModel
     val userResult by usersViewModel.userResult.collectAsState()
@@ -68,7 +69,7 @@ fun RegisterScreen(
     Scaffold (
         modifier = Modifier.fillMaxSize(),
                 topBar = {
-                    TopAppBarRegister()
+                    TopAppBarRegister(onNavigateBack = onNavigateBack)
                 }
             ){ padding ->
                 ScrollContent(padding=padding, onNavigateToLogin, usersViewModel, userResult)
@@ -283,7 +284,7 @@ fun ScrollContent(padding: PaddingValues, onNavigateToLogin: () -> Unit, usersVi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarRegister(){
+fun TopAppBarRegister(onNavigateBack: () -> Unit = {}){
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     TopAppBar(
@@ -309,7 +310,7 @@ fun TopAppBarRegister(){
             )
         },
         navigationIcon = {
-            IconButton (onClick = { /* do something */ }) {
+            IconButton (onClick = onNavigateBack) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowBack,
                     contentDescription = "Localized description"

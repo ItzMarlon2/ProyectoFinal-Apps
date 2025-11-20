@@ -11,6 +11,7 @@ import com.example.proyectofinal.model.Schedule
 import com.example.proyectofinal.model.User
 import com.example.proyectofinal.utils.RequestResult
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,34 +43,35 @@ class PlacesViewModel: ViewModel() {
         getAll()
     }
 
-    private suspend fun loadPlacesWithReviews(): List<Place> {
-        val placesList = getAllFirebase()
+    private suspend fun loadReviewsForPlaces(places: List<Place>): List<Place> {
+        if (places.isEmpty()) {
+            return places
+        }
 
-        // 2. Obtenemos todas las reseñas en una sola consulta
+        val placeIds = places.map { it.id }
+
         val reviewsSnapshot = db.collection("reviews")
-            .orderBy("date", Query.Direction.DESCENDING)
+            .whereIn("placeId", placeIds)
             .get()
             .await()
-        val allReviews = reviewsSnapshot.mapNotNull { it.toObject(Review::class.java) }
+        val relevantReviews = reviewsSnapshot.mapNotNull { it.toObject(Review::class.java) }
 
-        // 3. Agrupamos las reseñas por su 'placeId' para buscarlas fácilmente
-        val reviewsByPlaceId = allReviews.groupBy { it.placeId }
+        val reviewsByPlaceId = relevantReviews.groupBy { it.placeId }
 
-        // 4. Asignamos a cada lugar la lista de reseñas que le corresponde
-        placesList.forEach { place ->
+        places.forEach { place ->
             place.reviews = reviewsByPlaceId[place.id] ?: emptyList()
         }
 
-        return placesList
+        return places
     }
 
     fun getAll(){
         viewModelScope.launch {
             _isRefreshing.value = true
             try {
-                _places.value = loadPlacesWithReviews()
+                var placesList = getAllFirebase()
+                _places.value = loadReviewsForPlaces(placesList)
             } catch (e: Exception) {
-            // Manejar el error
                 println("PlacesViewModel: Error en getAll -> ${e.message}")
 
             } finally {
@@ -81,7 +83,15 @@ class PlacesViewModel: ViewModel() {
 
     fun getMyPlaces(ownerId:String){
         viewModelScope.launch {
-            _myPlaces.value = getMyPlacesFirebase(ownerId)
+            _isRefreshing.value = true
+            try {
+                val myPlacesList = getMyPlacesFirebase(ownerId)
+                _myPlaces.value = loadReviewsForPlaces(myPlacesList)
+            } catch (e: Exception) {
+                println("PlacesViewModel: Error en getMyPlaces -> ${e.message}")
+            } finally {
+                _isRefreshing.value = false
+            }
         }
     }
 
@@ -125,6 +135,49 @@ class PlacesViewModel: ViewModel() {
                     onFailure = { RequestResult.Failure(it.message ?: "Error al crear lugar")}
                 )
         }
+    }
+
+    fun toggleFavorite(placeId: String, userId: String) {
+        viewModelScope.launch {
+            try {
+                val placeRef = db.collection("places").document(placeId)
+
+                db.runTransaction { transaction ->
+                    val snapshot = transaction.get(placeRef)
+                    val favoritedByList = snapshot.get("favoritedBy") as? List<String> ?: emptyList()
+
+                    if (favoritedByList.contains(userId)) {
+                        transaction.update(placeRef, "favoritedBy",
+                            FieldValue.arrayRemove(userId))
+                    } else {
+                        transaction.update(placeRef, "favoritedBy",
+                            FieldValue.arrayUnion(userId))
+                    }
+                    null
+                }.await()
+
+                updateLocalPlaceFavoriteState(placeId, userId)
+
+            } catch (e: Exception) {
+                println("Error en toggleFavorite: ${e.message}")
+            }
+        }
+    }
+
+    private fun updateLocalPlaceFavoriteState(placeId: String, userId: String) {
+        _places.value = _places.value.map { place ->
+            if (place.id == placeId) {
+                val newFavList = if (place.favoritedBy.contains(userId)) {
+                    place.favoritedBy - userId
+                } else {
+                    place.favoritedBy + userId
+                }
+                place.copy(favoritedBy = newFavList)
+            } else {
+                place
+            }
+        }
+        // (Opcional pero recomendado) Haz lo mismo para '_myPlaces' si es necesario
     }
 
     private suspend fun createFirebase(place: Place){

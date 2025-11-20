@@ -38,7 +38,6 @@ fun Navigation(mainViewModel: MainViewModel, usersViewModel: UsersViewModel = vi
     val context = LocalContext.current
     val navController = rememberNavController()
     var user by remember { mutableStateOf(SharedPrefsUtil.getPreferences(context)) }
-    println("usuario: $user")
     val startDestination=if(user.isEmpty()){
         RouteScreen.Login
     }else{
@@ -59,8 +58,8 @@ fun Navigation(mainViewModel: MainViewModel, usersViewModel: UsersViewModel = vi
                 LoginForm(
                     onNavigateToRegister = { navController.navigate(RouteScreen.Register) },
                     onNavigateToForgotPassword = { navController.navigate(RouteScreen.ForgotPassword) },
-                    onNavigateToHome = {userId, role ->
-                        SharedPrefsUtil.savePreferences(context, userId, role)
+                    onNavigateToHome = {userId, role, nombre ->
+                        SharedPrefsUtil.savePreferences(context, userId, role, nombre)
                         user = SharedPrefsUtil.getPreferences(context)
                         if(role == Role.ADMIN){
                             navController.navigate(RouteScreen.HomeAdmin)
@@ -74,10 +73,11 @@ fun Navigation(mainViewModel: MainViewModel, usersViewModel: UsersViewModel = vi
             composable<RouteScreen.Register>{
                 RegisterScreen(
                     onNavigateToLogin = { navController.navigate(RouteScreen.Login) },
+                    onNavigateBack = { navController.popBackStack() }
                 )
             }
             composable<RouteScreen.ForgotPassword>{
-                ForgotPasswordScreen()
+                ForgotPasswordScreen(onNavigateBack = { navController.popBackStack() })
 
             }
 
@@ -119,7 +119,7 @@ fun Navigation(mainViewModel: MainViewModel, usersViewModel: UsersViewModel = vi
             composable<RouteScreen.PlaceDetail>{
                 val args = it.toRoute<RouteScreen.PlaceDetail>()
 
-                PlaceDetail(placeId = args.id, userId = user["userId"] ?: "" , onNavigateBack = {
+                PlaceDetail(placeId = args.id, userName = user["name"], userId = user["userId"] ?: "" , onNavigateBack = {
                     navController.popBackStack()
                 })
             }

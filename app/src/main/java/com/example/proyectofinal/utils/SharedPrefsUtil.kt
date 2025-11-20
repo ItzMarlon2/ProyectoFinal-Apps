@@ -5,11 +5,12 @@ import androidx.core.content.edit
 import com.example.proyectofinal.model.Role
 
 object SharedPrefsUtil{
-    fun savePreferences(context: Context, userId: String, rol: Role){
+    fun savePreferences(context: Context, userId: String, rol: Role, name: String){
         val sharedPreferences = context.getSharedPreferences("session", Context.MODE_PRIVATE)
         sharedPreferences.edit{
             putString("userId", userId)
             putString("role", rol.toString())
+            putString("name", name)
         }
     }
 
@@ -25,12 +26,14 @@ object SharedPrefsUtil{
         val sharedPreferences = context.getSharedPreferences("session", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getString("userId", "")
         val rol = sharedPreferences.getString("role", "")
-        return if(userId.isNullOrEmpty() || rol.isNullOrEmpty()){
+        val nombre = sharedPreferences.getString("name", "")
+        return if(userId.isNullOrEmpty() || rol.isNullOrEmpty() || nombre.isNullOrEmpty()){
             emptyMap()
         }else{
             mapOf(
                 "userId" to userId,
-                "role" to rol
+                "role" to rol,
+                "name" to nombre
             )
         }
     }
